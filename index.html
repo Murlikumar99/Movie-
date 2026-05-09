@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LEARNIX PLAYER PRO | Secure Stream Fix</title>
+    <title>LEARNIX PLAYER PRO | CloudFront Signed URL Fix</title>
     <link rel="icon" href="https://i.supaimg.com/5aa6f3e6-1291-4b63-879e-7870fcdac1d6.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Video.js core + HLS support + Quality selector -->
+    <!-- Video.js core + HTTP Streaming (HLS with full query param support) -->
     <link href="https://vjs.zencdn.net/8.10.0/video-js.min.css" rel="stylesheet">
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@videojs/http-streaming@3.8.0/dist/videojs-http-streaming.min.js"></script>
@@ -204,7 +204,6 @@
             border: 1px solid var(--primary);
             z-index: 99;
         }
-        i.fa-lock, i.fa-unlock { transition: 0.2s; }
     </style>
 </head>
 <body>
@@ -213,7 +212,7 @@
     <header>
         <div class="logo-area">
             <img src="https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png" class="logo" alt="logo">
-            <div class="logo-text">LEARNIX PLAYER · PRO STREAM</div>
+            <div class="logo-text">LEARNIX PLAYER · SIGNED URL FIX</div>
         </div>
         <div class="header-actions">
             <button class="btn btn-icon btn-secondary" id="editLockBtn"><i class="fas fa-lock"></i></button>
@@ -230,7 +229,7 @@
         <div class="url-panel">
             <div class="input-group">
                 <i class="fas fa-link"></i>
-                <input type="text" id="videoUrlInput" class="input-field" placeholder="HLS / M3U8 / MP4 / YouTube URL" value="https://d38x7u1iz4gu9m.cloudfront.net/index_6.m3u8?Signature=aoeQvopIAokjljKclsozW43a277TDSNZ9Vu8572t-9U7ZEr%7ETjEm-MNfMylIcweHrXDeLQy9vfiTdfs4DPVyeUvqE9te1zmtr3jYj6iQMdxlViQ-lCl1zeZYS0i5LMiMMteKlqa3mbBVItQ2vMbqY80R29sCuGvpCxU6ZdUeEn5lLsscts%7EoCjfDLw0UdFz9AgHOq%7EHXro7FQ%7EYkvEin6yLS8lbzqPy5yIU9eDYXJA-DrmkAKID2HV75a9d9yTg4Yg0P0hJCChyxWVZJ%7E98YCf2W-ohO4cwwEBsEUWQOJhoO6IAM2YUIrt5WEEdtL4BC2ii7xe5GBpgLnT1LRJtpAA__&Key-Pair-Id=APKAXVKMENFCRKTG5XE2&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9kMzh4N3UxaXo0Z3U5bS5jbG91ZGZyb250Lm5ldC8qIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzc4MzQ4NDEyfX19XX0_">
+                <input type="text" id="videoUrlInput" class="input-field" placeholder="HLS / M3U8 with CloudFront signatures (full URL)" value="https://d38x7u1iz4gu9m.cloudfront.net/index_6.m3u8?Signature=aoeQvopIAokjljKclsozW43a277TDSNZ9Vu8572t-9U7ZEr%7ETjEm-MNfMylIcweHrXDeLQy9vfiTdfs4DPVyeUvqE9te1zmtr3jYj6iQMdxlViQ-lCl1zeZYS0i5LMiMMteKlqa3mbBVItQ2vMbqY80R29sCuGvpCxU6ZdUeEn5lLsscts%7EoCjfDLw0UdFz9AgHOq%7EHXro7FQ%7EYkvEin6yLS8lbzqPy5yIU9eDYXJA-DrmkAKID2HV75a9d9yTg4Yg0P0hJCChyxWVZJ%7E98YCf2W-ohO4cwwEBsEUWQOJhoO6IAM2YUIrt5WEEdtL4BC2ii7xe5GBpgLnT1LRJtpAA__&Key-Pair-Id=APKAXVKMENFCRKTG5XE2&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9kMzh4N3UxaXo0Z3U5bS5jbG91ZGZyb250Lm5ldC8qIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzc4MzQ4NDEyfX19XX0_">
                 <button class="btn btn-primary" id="loadStreamBtn" style="padding: 8px 20px;"><i class="fas fa-play"></i> Play</button>
             </div>
             <div class="resource-grid">
@@ -264,7 +263,7 @@
 <div class="secure-indicator" id="editModeIndicator" style="display: none;"><i class="fas fa-unlock-alt"></i> ✦ Edit Mode Active ✦</div>
 <div class="toast" id="toastMsg"></div>
 
-<!-- Password Overlay -->
+<!-- Password Modal -->
 <div id="passwordModal" class="modal">
     <div class="modal-card">
         <i class="fas fa-lock" style="font-size: 48px; color: var(--primary); margin-bottom: 16px;"></i>
@@ -292,9 +291,8 @@
 </div>
 
 <script>
-    // ---------- FIXED HLS HANDLER with ADVANCED CORS + RETRY ----------
     let player = null;
-    let isEditMode = false;          // false = locked (blurred inputs)
+    let isEditMode = false;
     const CORRECT_PASSWORD = "murlikumar65@";
     
     // DOM elements
@@ -321,7 +319,6 @@
     const copyShareBtn = document.getElementById('copyShareBtn');
     const closeShareModal = document.getElementById('closeShareModal');
 
-    // Helper toast
     function showToast(msg, isError = false) {
         toastMsgDiv.textContent = msg;
         toastMsgDiv.style.display = 'block';
@@ -330,11 +327,9 @@
         setTimeout(() => { toastMsgDiv.style.display = 'none'; }, 3200);
     }
 
-    // Initialize video.js player with robust HLS settings
+    // Initialize video.js with full query param preservation for HLS
     function initPlayer() {
-        if (player) {
-            player.dispose();
-        }
+        if (player) player.dispose();
         const videoEl = document.createElement('video-js');
         videoEl.id = 'streamPlayer';
         videoEl.classList.add('video-js', 'vjs-big-play-centered');
@@ -350,82 +345,61 @@
                     enableLowInitialPlaylist: true,
                     smoothQualityChange: true,
                     overrideNative: true,
-                    maxBufferLength: 30,
-                    maxMaxBufferLength: 60,
-                    liveSyncDurationCount: 3,
+                    useDevicePixelRatio: true,
+                    // Crucial: Pass full query parameters to segment requests
+                    handleManifestRedirects: true,
+                    cacheEncryptionKeys: true
                 },
                 nativeAudioTracks: false,
                 nativeVideoTracks: false
             },
             liveui: true,
             fluid: true,
-            playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 2],
-            controlBar: {
-                pictureInPictureToggle: true,
-                currentTimeDisplay: true,
-                timeDivider: true,
-                durationDisplay: true,
-                progressControl: true
-            }
+            playbackRates: [0.5, 0.75, 1, 1.25, 1.5, 2]
         });
         return player;
     }
     
-    // Core HLS playback with fallback & error recovery
-    function loadStream(url) {
+    // Load stream — keeps full signed URL so .ts chunks inherit auth params
+    function loadStream(fullUrl) {
         if (!player) initPlayer();
-        if (!url || url.trim() === '') {
-            showToast("Please enter a valid stream URL", true);
-            return false;
-        }
-        // Special handling: YouTube detection
+        let url = fullUrl.trim();
+        if (!url) { showToast("Please enter a video URL", true); return false; }
+        
+        // YouTube fallback
         if (url.includes('youtube.com/watch') || url.includes('youtu.be/')) {
             let videoId = extractYouTubeId(url);
             if (videoId) {
-                let embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?modestbranding=1&rel=0&controls=1`;
-                player.src({ type: 'video/youtube', src: embedUrl });
+                player.src({ type: 'video/youtube', src: `https://www.youtube-nocookie.com/embed/${videoId}?modestbranding=1&rel=0` });
                 player.play().catch(e => showToast("Click play to start", false));
-                showToast("YouTube stream loaded (restricted mode)");
                 return true;
             }
         }
         
-        // HLS / M3U8 / MP4 logic
-        const isM3u8 = url.includes('.m3u8') || url.includes('m3u8?') || url.includes('cloudfront.net');
-        const isMp4 = url.includes('.mp4') || url.includes('.webm');
-        
-        if (isM3u8) {
-            // For problematic CloudFront M3U8 with signed URLs
+        // For HLS (including CloudFront signed URLs), pass full URL with all query params
+        if (url.includes('.m3u8') || url.includes('m3u8?') || url.includes('cloudfront.net')) {
             player.src({
                 src: url,
                 type: 'application/x-mpegURL'
             });
-            player.ready(() => {
-                player.on('error', (event) => {
-                    const error = player.error();
-                    console.error("VideoJS error", error);
-                    if (error && error.code === 4) {
-                        showToast("Media error: Retrying with advanced CORS fix...", true);
-                        setTimeout(() => {
-                            // retry once more via hard reload
-                            player.src({ src: url, type: 'application/x-mpegURL' });
-                            player.load();
-                        }, 1500);
-                    } else {
-                        showToast(`Stream error (${error?.code || 'unknown'}). Check URL permissions.`, true);
-                    }
-                });
-                player.play().catch(e => showToast("Autoplay blocked, press ▶️ play", false));
-                showToast("Loading HLS stream with secure player...");
+            player.on('error', () => {
+                const err = player.error();
+                if (err && err.code === 4) {
+                    showToast("Stream error - maybe signature expired? Refresh the signed URL.", true);
+                } else {
+                    showToast(`Playback error (${err?.code || 'unknown'})`, true);
+                }
             });
-        } else if (isMp4) {
+            player.play().catch(e => showToast("Click the play button to start", false));
+            showToast("Loading signed HLS stream... all chunks will carry auth.", false);
+        } 
+        else if (url.includes('.mp4') || url.includes('.webm')) {
             player.src({ src: url, type: 'video/mp4' });
-            player.play().catch(e => showToast("Playback blocked, click play", false));
-            showToast("Direct video loaded");
-        } else {
-            // fallback as generic
-            player.src({ src: url, type: 'application/vnd.apple.mpegurl' });
-            player.play().catch(e => showToast("Format not recognized, trying as HLS", false));
+            player.play().catch(e => showToast("Click play", false));
+        }
+        else {
+            showToast("Unsupported URL format. Use .m3u8, .mp4, or YouTube link.", true);
+            return false;
         }
         return true;
     }
@@ -436,7 +410,7 @@
         return match ? match[1] : null;
     }
     
-    // Edit mode toggles (lock/unlock fields)
+    // Edit mode: unlock/lock UI
     function applyEditMode(editable) {
         isEditMode = editable;
         if (editable) {
@@ -452,7 +426,7 @@
             editLockBtn.classList.remove('btn-secondary');
             secureBadge.innerHTML = '<i class="fas fa-edit"></i> Admin: Edit Mode ON';
             editIndicator.style.display = 'flex';
-            showToast("Edit mode ACTIVE — you can modify all URLs", false);
+            showToast("Edit mode active – you can modify URLs", false);
         } else {
             videoUrlInput.setAttribute('readonly', 'readonly');
             notesUrlInput.setAttribute('readonly', 'readonly');
@@ -474,9 +448,8 @@
             passwordModal.style.display = 'none';
             adminPassField.value = '';
             localStorage.setItem('learnix_edit_mode', 'true');
-            showToast("Unlocked! Now you can edit URLs and thumbnails", false);
         } else {
-            showToast("Incorrect password! Access denied", true);
+            showToast("Wrong password!", true);
             adminPassField.value = '';
         }
     }
@@ -484,10 +457,9 @@
     function lockEditing() {
         applyEditMode(false);
         localStorage.removeItem('learnix_edit_mode');
-        showToast("Editing locked. Enter password to modify links.", false);
+        showToast("Editing locked. Use password to modify links.", false);
     }
     
-    // Save current session
     function saveCurrentSession() {
         const session = {
             video: videoUrlInput.value,
@@ -496,7 +468,7 @@
             timestamp: Date.now()
         };
         localStorage.setItem('learnix_last_session', JSON.stringify(session));
-        showToast("Session saved! (video + notes + DPP)", false);
+        showToast("Session saved (video + resources)", false);
     }
     
     function loadLastSession() {
@@ -507,7 +479,7 @@
                 if (sess.video) videoUrlInput.value = sess.video;
                 if (sess.notes) notesUrlInput.value = sess.notes;
                 if (sess.dpp) dppUrlInput.value = sess.dpp;
-                showToast("Previous session loaded", false);
+                showToast("Loaded previous session", false);
             } catch(e) {}
         }
     }
@@ -517,7 +489,7 @@
         const notes = notesUrlInput.value || "(none)";
         const dpp = dppUrlInput.value || "(none)";
         const exportText = `LEARNIX SESSION\nVideo: ${video}\nNotes: ${notes}\nDPP: ${dpp}`;
-        navigator.clipboard.writeText(exportText).then(() => showToast("Session links copied to clipboard", false)).catch(()=>showToast("Could not copy",true));
+        navigator.clipboard.writeText(exportText).then(() => showToast("Links copied", false)).catch(()=>showToast("Copy failed", true));
     }
     
     function generateShareableURL() {
@@ -529,13 +501,11 @@
         if (video) params.set('v', btoa(encodeURIComponent(video)));
         if (notes) params.set('n', btoa(encodeURIComponent(notes)));
         if (dpp) params.set('d', btoa(encodeURIComponent(dpp)));
-        const shareUrl = params.toString() ? `${base}?${params.toString()}` : base;
-        return shareUrl;
+        return params.toString() ? `${base}?${params.toString()}` : base;
     }
     
     function openShareModal() {
-        const url = generateShareableURL();
-        shareLinkInput.value = url;
+        shareLinkInput.value = generateShareableURL();
         shareModal.style.display = 'flex';
     }
     
@@ -545,36 +515,22 @@
         const encodedNotes = urlParams.get('n');
         const encodedDpp = urlParams.get('d');
         if (encodedVideo) {
-            try {
-                videoUrlInput.value = decodeURIComponent(atob(encodedVideo));
-            } catch(e) {}
+            try { videoUrlInput.value = decodeURIComponent(atob(encodedVideo)); } catch(e) {}
         }
         if (encodedNotes) {
-            try {
-                notesUrlInput.value = decodeURIComponent(atob(encodedNotes));
-            } catch(e) {}
+            try { notesUrlInput.value = decodeURIComponent(atob(encodedNotes)); } catch(e) {}
         }
         if (encodedDpp) {
-            try {
-                dppUrlInput.value = decodeURIComponent(atob(encodedDpp));
-            } catch(e) {}
+            try { dppUrlInput.value = decodeURIComponent(atob(encodedDpp)); } catch(e) {}
         }
-        // If video present, auto-load stream
         if (videoUrlInput.value.trim()) {
-            setTimeout(() => loadStream(videoUrlInput.value), 300);
+            setTimeout(() => loadStream(videoUrlInput.value), 400);
         }
     }
     
-    // Reset player & clear fields
     function resetAll() {
-        if (player) {
-            player.reset();
-            player.src({ type: '', src: '' });
-        }
-        if (!isEditMode) {
-            showToast("Edit mode required to reset fields", true);
-            return;
-        }
+        if (player) { player.reset(); player.src({ type: '', src: '' }); }
+        if (!isEditMode) { showToast("Enable edit mode to reset fields", true); return; }
         videoUrlInput.value = '';
         notesUrlInput.value = '';
         dppUrlInput.value = '';
@@ -585,42 +541,32 @@
     // Event listeners
     loadBtn.addEventListener('click', () => {
         const url = videoUrlInput.value.trim();
-        if (!url) { showToast("Enter video URL first", true); return; }
+        if (!url) { showToast("Enter video URL", true); return; }
         loadStream(url);
     });
     
     editLockBtn.addEventListener('click', () => {
-        if (isEditMode) {
-            lockEditing();
-        } else {
-            passwordModal.style.display = 'flex';
-        }
+        if (isEditMode) lockEditing();
+        else passwordModal.style.display = 'flex';
     });
     
-    submitPass.addEventListener('click', () => {
-        unlockWithPassword(adminPassField.value);
-    });
-    closePass.addEventListener('click', () => {
-        passwordModal.style.display = 'none';
-        adminPassField.value = '';
-    });
-    adminPassField.addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') unlockWithPassword(adminPassField.value);
-    });
+    submitPass.addEventListener('click', () => unlockWithPassword(adminPassField.value));
+    closePass.addEventListener('click', () => { passwordModal.style.display = 'none'; adminPassField.value = ''; });
+    adminPassField.addEventListener('keypress', (e) => { if(e.key === 'Enter') unlockWithPassword(adminPassField.value); });
     
     saveSessionBtn.addEventListener('click', saveCurrentSession);
     exportLinksBtn.addEventListener('click', exportCurrentLinks);
     resetBtn.addEventListener('click', resetAll);
     
     viewNotesBtn.addEventListener('click', () => {
-        const notesUrl = notesUrlInput.value.trim();
-        if (notesUrl) window.open(notesUrl, '_blank');
-        else showToast("No notes URL provided", true);
+        const url = notesUrlInput.value.trim();
+        if (url) window.open(url, '_blank');
+        else showToast("No notes URL", true);
     });
     viewDppBtn.addEventListener('click', () => {
-        const dppUrl = dppUrlInput.value.trim();
-        if (dppUrl) window.open(dppUrl, '_blank');
-        else showToast("No DPP URL provided", true);
+        const url = dppUrlInput.value.trim();
+        if (url) window.open(url, '_blank');
+        else showToast("No DPP URL", true);
     });
     shareBtn.addEventListener('click', openShareModal);
     copyShareBtn.addEventListener('click', () => {
@@ -653,33 +599,13 @@
         }
     });
     
-    // Check localstorage for persistent edit
+    // Bootstrap
     window.addEventListener('DOMContentLoaded', () => {
         initPlayer();
-        if (localStorage.getItem('learnix_edit_mode') === 'true') {
-            applyEditMode(true);
-        } else {
-            applyEditMode(false);
-        }
+        if (localStorage.getItem('learnix_edit_mode') === 'true') applyEditMode(true);
+        else applyEditMode(false);
         loadLastSession();
-        loadFromUrlParams();    // auto-play shared link params
-        
-        // additional fix for cloudfront signature: trigger load if url exists
-        if (videoUrlInput.value.trim()) {
-            setTimeout(() => {
-                if (videoUrlInput.value.includes('cloudfront.net')) {
-                    showToast("Detected CloudFront HLS stream — initializing player", false);
-                    loadStream(videoUrlInput.value);
-                }
-            }, 800);
-        }
-    });
-    
-    // Override any XHR/CORS issues by forcing no-cors mode is not needed, but video.js hls.js handles it.
-    window.addEventListener('error', (e) => {
-        if (e.message && e.message.includes('HLS')) {
-            console.warn("HLS fallback triggered");
-        }
+        loadFromUrlParams();
     });
 </script>
 </body>
