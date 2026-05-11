@@ -3,21 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LEARNIX PLAYER · Secure DASH Stream · Study Resources</title>
+    <title>LEARNIX PLAYER · DASH with Auto Auth Injection</title>
     <meta property="og:image" content="https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png" id="og-image">
     <link rel="icon" href="https://i.supaimg.com/5aa6f3e6-1291-4b63-879e-7870fcdac1d6.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #00E0A1;
             --primary-dark: #00B884;
@@ -31,7 +25,6 @@
             --shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
             --radius: 20px;
         }
-
         :root.light-theme {
             --primary: #00996B;
             --bg-dark: #F1F5F9;
@@ -39,24 +32,14 @@
             --bg-card: #FFFFFF;
             --text-light: #0F172A;
             --text-muted: #475569;
-            --border-light: rgba(0,153,107,0.2);
-            --shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
         }
-
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(145deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
             color: var(--text-light);
             transition: all 0.25s ease;
-            overflow-x: hidden;
         }
-
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
         header {
             display: flex;
             justify-content: space-between;
@@ -66,18 +49,8 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .logo {
-            height: 52px;
-            filter: drop-shadow(0 0 6px var(--primary));
-        }
-
+        .logo-area { display: flex; align-items: center; gap: 14px; }
+        .logo { height: 52px; filter: drop-shadow(0 0 6px var(--primary)); }
         .logo-text {
             font-size: 26px;
             font-weight: 800;
@@ -86,69 +59,44 @@
             background-clip: text;
             color: transparent;
         }
-
         .btn-icon {
-            width: 44px;
-            height: 44px;
+            width: 44px; height: 44px;
             border-radius: 40px;
             background: var(--bg-card);
             border: 1px solid var(--border-light);
             color: var(--primary);
             cursor: pointer;
-            transition: 0.2s;
         }
-
         .btn-primary {
             background: var(--primary);
             color: #0A1128;
-            border: none;
             font-weight: 700;
             padding: 12px 28px;
             border-radius: 40px;
+            border: none;
             cursor: pointer;
-            transition: 0.2s;
             box-shadow: var(--primary-glow);
         }
-
         .btn-secondary {
             background: rgba(0,224,161,0.1);
             border: 1px solid var(--border-light);
             color: var(--text-light);
             padding: 10px 20px;
             border-radius: 40px;
-            font-weight: 500;
             cursor: pointer;
         }
-
         .player-card {
-            background: #000000;
+            background: #000;
             border-radius: var(--radius);
             overflow: hidden;
             aspect-ratio: 16 / 9;
             box-shadow: var(--shadow);
             border: 1px solid var(--border-light);
             margin: 28px 0;
-            position: relative;
         }
-
-        #video-container {
-            width: 100%;
-            height: 100%;
-        }
-
-        video, .dash-player {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background: black;
-        }
-
-        .url-lock-group {
-            position: relative;
-            margin: 18px 0;
-        }
-
-        input, .resource-input {
+        #video-container, #dash-video { width: 100%; height: 100%; object-fit: contain; background: black; }
+        .url-input-group { position: relative; margin: 18px 0; }
+        input {
             width: 100%;
             padding: 15px 20px;
             background: var(--bg-card);
@@ -156,22 +104,9 @@
             border-radius: 60px;
             color: var(--text-light);
             font-size: 0.95rem;
-            transition: 0.2s;
         }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0,224,161,0.2);
-        }
-
-        .blurred {
-            filter: blur(6px);
-            background: rgba(255,255,255,0.03);
-            user-select: none;
-            pointer-events: none;
-        }
-
+        input:focus { outline: none; border-color: var(--primary); }
+        .blurred { filter: blur(6px); background: rgba(255,255,255,0.03); user-select: none; pointer-events: none; }
         .lock-overlay {
             position: absolute;
             inset: 0;
@@ -182,22 +117,9 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: 0.2s;
         }
-
-        .lock-overlay i {
-            font-size: 28px;
-            color: var(--primary);
-            animation: pulse 1.8s infinite;
-        }
-
-        .resources-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin: 40px 0;
-        }
-
+        .lock-overlay i { font-size: 28px; color: var(--primary); animation: pulse 1.8s infinite; }
+        .resources-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 40px 0; }
         .resource-card {
             background: var(--bg-card);
             border-radius: 24px;
@@ -205,7 +127,6 @@
             border-top: 3px solid var(--primary);
             box-shadow: var(--shadow);
         }
-
         .badge {
             background: var(--primary);
             color: #0A1128;
@@ -214,9 +135,7 @@
             border-radius: 40px;
             font-size: 0.8rem;
             display: inline-block;
-            margin-bottom: 12px;
         }
-
         .toast {
             position: fixed;
             bottom: 30px;
@@ -226,13 +145,11 @@
             backdrop-filter: blur(12px);
             padding: 12px 28px;
             border-radius: 60px;
-            font-weight: 500;
             z-index: 2000;
             display: none;
             border: 1px solid var(--primary);
             white-space: nowrap;
         }
-
         .modal {
             display: none;
             position: fixed;
@@ -243,7 +160,6 @@
             justify-content: center;
             z-index: 3000;
         }
-
         .modal-card {
             background: var(--bg-card);
             max-width: 460px;
@@ -253,43 +169,13 @@
             text-align: center;
             border: 1px solid var(--border-light);
         }
-
-        .flex-btns {
-            display: flex;
-            gap: 14px;
-            justify-content: center;
-            margin-top: 24px;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.7; transform: scale(0.98);}
-            100% { opacity: 1; transform: scale(1);}
-        }
-        @media (max-width: 700px) {
-            .resources-grid { grid-template-columns: 1fr; }
-            .container { padding: 0 16px; }
-        }
-        .secure-badge {
-            background: rgba(0,224,161,0.15);
-            padding: 6px 14px;
-            border-radius: 60px;
-            font-size: 0.8rem;
-        }
-        .thumb-preview-area {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-            align-items: center;
-        }
-        .thumb-img {
-            width: 80px;
-            height: 45px;
-            border-radius: 12px;
-            object-fit: cover;
-            background: #1e293b;
-        }
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .flex-btns { display: flex; gap: 14px; justify-content: center; margin-top: 24px; }
+        @keyframes pulse { 0% { opacity: 0.7; } 100% { opacity: 1; } }
+        @media (max-width: 700px) { .resources-grid { grid-template-columns: 1fr; } .container { padding: 0 16px; } }
+        .secure-badge { background: rgba(0,224,161,0.15); padding: 6px 14px; border-radius: 60px; font-size: 0.8rem; display: inline-block; }
+        .thumb-preview-area { display: flex; gap: 12px; margin-top: 15px; align-items: center; }
+        .thumb-img { width: 80px; height: 45px; border-radius: 12px; object-fit: cover; }
+        .inject-stats { background: rgba(0,224,161,0.1); padding: 12px; border-radius: 16px; font-size: 0.7rem; font-family: monospace; margin: 12px 0; }
     </style>
 </head>
 <body>
@@ -306,118 +192,110 @@
         </div>
     </header>
 
-    <div style="text-align: center; margin: 20px 0 10px;">
-        <h1 data-aos="fade-up" style="font-size: clamp(1.8rem,5vw,2.6rem);">📺 Premium DASH + Live Ready</h1>
-        <p style="color: var(--text-muted);">Secure playback • Password-protected editing • Study resources</p>
+    <div style="text-align: center; margin: 20px 0;">
+        <h1 data-aos="fade-up" style="font-size: clamp(1.8rem,5vw,2.6rem);">🔐 DASH + Auto Auth Injection</h1>
+        <p style="color: var(--text-muted);">Every segment request automatically gets URLPrefix, Expires, KeyName & Signature</p>
     </div>
 
-    <!-- PLAYER AREA -->
+    <div class="inject-stats">
+        <i class="fas fa-syringe" style="color: var(--primary);"></i> <strong>Auto-Injection Active</strong><br>
+        <span id="injectionStatus">✅ Intercepting all XHR requests → Adding auth params to every .mp4, init.mp4, and segment</span>
+    </div>
+
     <div class="player-card" data-aos="fade-up">
         <div id="video-container">
-            <video id="dash-video" controls playsinline disablePictureInPicture="false" style="width:100%;height:100%;background:#000;"></video>
+            <video id="dash-video" controls playsinline style="width:100%;height:100%;background:#000;"></video>
         </div>
     </div>
 
-    <!-- MAIN VIDEO URL (hidden source) -->
-    <div class="url-lock-group">
-        <input type="text" id="videoSourceInput" class="blurred" placeholder="🔒 Video URL (DASH / HLS / MP4)" readonly value="https://sec-prod-mediacdn.pw.live/e91ca50a-ce23-4bce-9c74-819a7b6d9e68/master.mpd?URLPrefix=aHR0cHM6Ly9zZWMtcHJvZC1tZWRpYWNkbi5wdy5saXZlL2U5MWNhNTBhLWNlMjMtNGJjZS05Yzc0LTgxOWE3YjZkOWU2OA&Expires=1778539030&KeyName=pw-prod-key&Signature=p934lsmcYFvhC8wgX9EfxaauhD4YoJ2nu-JqdDdMFXZeYWSW-Esp-GokfL37-y28FnoNkZLlVB2cZpSqFJ3SBg">
+    <!-- MAIN URL INPUT -->
+    <div class="url-input-group">
+        <input type="text" id="manifestUrlInput" class="blurred" placeholder="🔐 DASH Manifest URL (with or without auth params)" 
+               readonly value="https://sec-prod-mediacdn.pw.live/e91ca50a-ce23-4bce-9c74-819a7b6d9e68/master.mpd?URLPrefix=aHR0cHM6Ly9zZWMtcHJvZC1tZWRpYWNkbi5wdy5saXZlL2U5MWNhNTBhLWNlMjMtNGJjZS05Yzc0LTgxOWE3YjZkOWU2OA&Expires=1778539030&KeyName=pw-prod-key&Signature=p934lsmcYFvhC8wgX9EfxaauhD4YoJ2nu-JqdDdMFXZeYWSW-Esp-GokfL37-y28FnoNkZLlVB2cZpSqFJ3SBg">
         <div class="lock-overlay" id="mainUrlLock"><i class="fas fa-lock"></i></div>
     </div>
 
-    <!-- Thumbnail (hidden) -->
-    <div class="url-lock-group">
-        <input type="text" id="thumbnailInput" class="blurred" placeholder="🖼️ Thumbnail image URL (optional)" readonly>
+    <!-- Thumbnail -->
+    <div class="url-input-group">
+        <input type="text" id="thumbnailInput" class="blurred" placeholder="🖼️ Thumbnail image URL" readonly>
         <div class="lock-overlay" id="thumbLock"><i class="fas fa-lock"></i></div>
     </div>
-
     <div class="thumb-preview-area" id="thumbPreviewWrap" style="display: none;">
         <img id="liveThumbImg" class="thumb-img" alt="preview">
-        <span style="font-size: 0.8rem;">Thumbnail preview</span>
-        <button id="removeThumbBtn" class="btn-secondary" style="padding: 4px 12px;">✖ Remove</button>
+        <button id="removeThumbBtn" class="btn-secondary" style="padding: 4px 12px;">Remove</button>
     </div>
 
-    <div class="flex-btns" style="margin-top: 10px; gap: 12px;">
-        <button class="btn-primary" id="playStreamBtn"><i class="fas fa-play"></i> Play Stream</button>
-        <button class="btn-secondary" id="resetAllBtn"><i class="fas fa-undo-alt"></i> Reset All</button>
+    <div class="flex-btns" style="margin: 20px 0;">
+        <button class="btn-primary" id="playStreamBtn"><i class="fas fa-play"></i> Play Stream (Auto Inject)</button>
+        <button class="btn-secondary" id="resetAllBtn"><i class="fas fa-undo-alt"></i> Reset</button>
     </div>
 
-    <!-- STUDY RESOURCES SECTION -->
+    <!-- Resources -->
     <div class="resources-grid">
         <div class="resource-card">
             <i class="fas fa-file-alt" style="color: var(--primary); font-size: 28px;"></i>
-            <h3 style="margin: 10px 0;">📄 Notes</h3>
-            <div class="url-lock-group" style="margin: 12px 0;">
-                <input type="text" id="notesUrlInput" class="resource-input blurred" placeholder="Notes URL (PDF, Google Docs)" readonly>
+            <h3>📄 Notes</h3>
+            <div class="url-input-group" style="margin: 12px 0;">
+                <input type="text" id="notesUrlInput" class="resource-input blurred" placeholder="Notes URL" readonly>
                 <div class="lock-overlay" id="notesLock"><i class="fas fa-lock"></i></div>
             </div>
-            <div id="notesActions" style="display: none; gap: 12px; margin-top: 12px;">
-                <button class="btn-secondary" id="viewNotesBtn"><i class="fas fa-external-link-alt"></i> View</button>
-                <button class="btn-primary" id="downloadNotesPdfBtn"><i class="fas fa-download"></i> PDF</button>
+            <div id="notesActions" style="display: none; gap: 12px;">
+                <button class="btn-secondary" id="viewNotesBtn">View</button>
+                <button class="btn-primary" id="downloadNotesPdfBtn">PDF</button>
             </div>
-            <div id="notesStatus" style="display: none;" class="secure-badge"><i class="fas fa-check-circle"></i> Notes added</div>
         </div>
-
         <div class="resource-card">
             <i class="fas fa-tasks" style="color: var(--primary); font-size: 28px;"></i>
-            <h3 style="margin: 10px 0;">📌 DPP (Practice)</h3>
-            <div class="url-lock-group" style="margin: 12px 0;">
-                <input type="text" id="dppUrlInput" class="resource-input blurred" placeholder="DPP URL (PDF/Docs)" readonly>
+            <h3>📌 DPP</h3>
+            <div class="url-input-group" style="margin: 12px 0;">
+                <input type="text" id="dppUrlInput" class="resource-input blurred" placeholder="DPP URL" readonly>
                 <div class="lock-overlay" id="dppLock"><i class="fas fa-lock"></i></div>
             </div>
-            <div id="dppActions" style="display: none; gap: 12px; margin-top: 12px;">
-                <button class="btn-secondary" id="viewDppBtn"><i class="fas fa-external-link-alt"></i> View</button>
-                <button class="btn-primary" id="downloadDppPdfBtn"><i class="fas fa-download"></i> PDF</button>
+            <div id="dppActions" style="display: none; gap: 12px;">
+                <button class="btn-secondary" id="viewDppBtn">View</button>
+                <button class="btn-primary" id="downloadDppPdfBtn">PDF</button>
             </div>
-            <div id="dppStatus" style="display: none;" class="secure-badge"><i class="fas fa-check-circle"></i> DPP ready</div>
         </div>
     </div>
 
-    <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 30px 0;">
-        <button class="btn-secondary" id="saveSessionBtn"><i class="fas fa-save"></i> Save Session</button>
-        <button class="btn-secondary" id="loadSessionBtn"><i class="fas fa-folder-open"></i> Load Session</button>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 20px 0;">
+        <button class="btn-secondary" id="saveSessionBtn"><i class="fas fa-save"></i> Save</button>
+        <button class="btn-secondary" id="loadSessionBtn"><i class="fas fa-folder-open"></i> Load</button>
         <button class="btn-secondary" id="exportLinksBtn"><i class="fas fa-code-branch"></i> Export</button>
-        <button class="btn-secondary" id="bookmarkBtn"><i class="fas fa-bookmark"></i> Bookmark</button>
     </div>
-
-    <div class="secure-badge" style="text-align:center; margin-bottom: 40px;">🔐 Admin edit mode locked by default · request password to modify URLs</div>
 </div>
 
-<!-- Password modal -->
+<!-- Password Modal -->
 <div id="passwordModal" class="modal">
     <div class="modal-card">
         <i class="fas fa-key" style="font-size: 48px; color: var(--primary);"></i>
-        <h2 style="margin: 15px 0;">Admin Authentication</h2>
-        <p>Enter master password to unlock editing of video, thumbnail & resources</p>
+        <h2>Admin Authentication</h2>
         <input type="password" id="adminPassInput" placeholder="Password" style="width:100%; margin: 20px 0; padding: 12px; border-radius: 60px;">
         <div class="flex-btns">
             <button class="btn-primary" id="unlockBtn">Unlock</button>
             <button class="btn-secondary" id="cancelPassBtn">Cancel</button>
         </div>
-        <p style="margin-top: 15px; font-size:0.8rem;">Default: <strong>murlikumar65@</strong> (set in localStorage)</p>
     </div>
 </div>
 
 <!-- Share Modal -->
 <div id="shareModal" class="modal">
     <div class="modal-card">
-        <h2><i class="fas fa-share-alt"></i> Share Secure Session</h2>
-        <p style="margin: 12px 0;">Share this link without exposing raw URLs</p>
-        <div style="display: flex; gap: 4px;">
+        <h2>Share Session</h2>
+        <div style="display: flex; gap: 4px; margin: 16px 0;">
             <input type="text" id="shareLinkField" readonly style="flex:1; border-radius: 60px;">
             <button id="copyShareBtn" class="btn-primary">Copy</button>
         </div>
-        <div class="flex-btns">
-            <button class="btn-secondary" id="closeShareModal">Close</button>
-        </div>
+        <button class="btn-secondary" id="closeShareModal">Close</button>
     </div>
 </div>
 
 <!-- Export Modal -->
 <div id="exportModal" class="modal">
     <div class="modal-card">
-        <h3>📋 Session Export</h3>
+        <h3>Export Session</h3>
         <pre id="exportContent" style="background:#0f172a; padding:12px; border-radius: 16px; font-size:12px; margin:15px 0; white-space:pre-wrap;"></pre>
-        <button id="copyExportBtn" class="btn-primary">Copy Text</button>
+        <button id="copyExportBtn" class="btn-primary">Copy</button>
         <button class="btn-secondary" id="closeExportBtn">Close</button>
     </div>
 </div>
@@ -427,34 +305,87 @@
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     (function() {
-        // --- DASH + players
         let dashPlayer = null;
         let isEditMode = false;
-
+        let xhrInterceptorActive = false;
+        
+        // Auth parameters (hardcoded from your working curl)
+        const AUTH_PARAMS = {
+            URLPrefix: 'aHR0cHM6Ly9zZWMtcHJvZC1tZWRpYWNkbi5wdy5saXZlL2U5MWNhNTBhLWNlMjMtNGJjZS05Yzc0LTgxOWE3YjZkOWU2OA',
+            Expires: '1778539030',
+            KeyName: 'pw-prod-key',
+            Signature: 'p934lsmcYFvhC8wgX9EfxaauhD4YoJ2nu-JqdDdMFXZeYWSW-Esp-GokfL37-y28FnoNkZLlVB2cZpSqFJ3SBg'
+        };
+        
+        const AUTH_QUERY_STRING = `URLPrefix=${AUTH_PARAMS.URLPrefix}&Expires=${AUTH_PARAMS.Expires}&KeyName=${AUTH_PARAMS.KeyName}&Signature=${encodeURIComponent(AUTH_PARAMS.Signature)}`;
+        
         // DOM elements
-        const videoInput = document.getElementById('videoSourceInput');
+        const manifestInput = document.getElementById('manifestUrlInput');
         const thumbInput = document.getElementById('thumbnailInput');
         const notesInput = document.getElementById('notesUrlInput');
         const dppInput = document.getElementById('dppUrlInput');
         const videoPlayer = document.getElementById('dash-video');
-        const playBtn = document.getElementById('playStreamBtn');
-        const resetAll = document.getElementById('resetAllBtn');
-
-        // Locks
-        const mainLock = document.getElementById('mainUrlLock');
-        const thumbLock = document.getElementById('thumbLock');
-        const notesLock = document.getElementById('notesLock');
-        const dppLock = document.getElementById('dppLock');
-        const editLockBtn = document.getElementById('editLockBtn');
-
-        // Helper functions
-        function showToast(msg, type = 'info') {
+        
+        function showToast(msg, isError = false) {
             const toast = document.getElementById('toastMsg');
             toast.textContent = msg;
             toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2800);
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
-
+        
+        // Get clean manifest URL (without any query params)
+        function getCleanManifestUrl() {
+            let fullUrl = manifestInput.value.trim();
+            if (!fullUrl) return '';
+            return fullUrl.split('?')[0];
+        }
+        
+        // Setup global XHR interceptor to add auth params to EVERY segment request
+        function enableXHRInterceptor() {
+            if (xhrInterceptorActive) return;
+            
+            const originalOpen = XMLHttpRequest.prototype.open;
+            const originalSend = XMLHttpRequest.prototype.send;
+            const authString = AUTH_QUERY_STRING;
+            
+            // Track requests for debugging
+            let modifiedCount = 0;
+            
+            XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+                let modifiedUrl = url;
+                if (url && typeof url === 'string') {
+                    // Check if this is a DASH segment request (mp4, init, audio, video chunks)
+                    const isSegmentRequest = 
+                        url.includes('.mp4') || 
+                        url.includes('init.mp4') ||
+                        url.includes('/dash/') ||
+                        url.includes('/audio/') ||
+                        url.includes('/video/') ||
+                        (url.match(/\/\d+\.mp4/) !== null) ||  // matches /360/init.mp4, /720/3.mp4, etc.
+                        url.includes('segment');
+                    
+                    // Also check if it's from the same CDN domain
+                    const isCDNRequest = url.includes('sec-prod-mediacdn.pw.live');
+                    
+                    if (isSegmentRequest && isCDNRequest && !url.includes('URLPrefix=')) {
+                        const separator = modifiedUrl.includes('?') ? '&' : '?';
+                        modifiedUrl = modifiedUrl + separator + authString;
+                        modifiedCount++;
+                        if (modifiedCount <= 5) {
+                            console.log('[Interceptor] Modified:', modifiedUrl.substring(0, 150) + '...');
+                        }
+                    }
+                }
+                return originalOpen.call(this, method, modifiedUrl, async !== false, user, pass);
+            };
+            
+            xhrInterceptorActive = true;
+            document.getElementById('injectionStatus').innerHTML = '✅ Interceptor ACTIVE → Adding auth to: init.mp4, audio/*, video segments, *.mp4';
+            showToast('🔧 XHR Interceptor enabled - all segment requests will get auth params');
+            
+            // Optional: restore after some time? No, keep it active for whole session
+        }
+        
         function destroyDash() {
             if (dashPlayer) {
                 dashPlayer.reset();
@@ -462,222 +393,169 @@
             }
             videoPlayer.src = '';
         }
-
-        function loadDashStream(url) {
+        
+        function setupDashStream() {
+            const manifestUrl = getCleanManifestUrl();
+            if (!manifestUrl) {
+                showToast("Please enter a manifest URL", true);
+                return false;
+            }
+            
             destroyDash();
-            if (!url) {
-                showToast("No video URL provided", "error");
+            
+            if (!dashjs.supportsMediaSource()) {
+                showToast("Browser doesn't support DASH", true);
                 return false;
             }
-            if (dashjs.supportsMediaSource()) {
-                dashPlayer = dashjs.MediaPlayer().create();
-                dashPlayer.initialize(videoPlayer, url, true);
-                dashPlayer.updateSettings({ streaming: { buffer: { bufferTimeAtTopQuality: 15 } } });
-                dashPlayer.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, () => showToast("Stream ready", "success"));
-                dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (e) => showToast("DASH error, check URL", "error"));
-                return true;
-            } else {
-                showToast("Browser not DASH compatible", "error");
-                return false;
+            
+            // Enable the XHR interceptor BEFORE initializing DASH.js
+            enableXHRInterceptor();
+            
+            dashPlayer = dashjs.MediaPlayer().create();
+            dashPlayer.initialize(videoPlayer, manifestUrl, true);
+            
+            dashPlayer.updateSettings({
+                streaming: {
+                    buffer: { bufferTimeAtTopQuality: 15 },
+                    metrics: { maxAllowedChunkCount: 10 }
+                }
+            });
+            
+            dashPlayer.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, () => {
+                showToast("✅ Stream ready - all segments authenticated");
+            });
+            
+            dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (e) => {
+                console.error("DASH Error", e);
+                showToast("⚠️ Stream error - check URL or auth params", true);
+            });
+            
+            return true;
+        }
+        
+        function playStream() {
+            if (!manifestInput.value.trim()) {
+                showToast("Please enter a manifest URL", true);
+                return;
             }
+            setupDashStream();
         }
-
-        function playCurrentVideo() {
-            let url = videoInput.value.trim();
-            if (!url) { showToast("Video URL is empty", "error"); return; }
-            loadDashStream(url);
-        }
-
-        // Thumbnail preview logic
+        
+        // Thumbnail functions
         function updateThumbnailUI() {
             const thumbUrl = thumbInput.value.trim();
             const wrap = document.getElementById('thumbPreviewWrap');
             const img = document.getElementById('liveThumbImg');
-            if (thumbUrl && (thumbUrl.startsWith('http') || thumbUrl.startsWith('https'))) {
+            if (thumbUrl && thumbUrl.startsWith('http')) {
                 img.src = thumbUrl;
                 wrap.style.display = 'flex';
-                // update meta OG image
                 document.getElementById('og-image').setAttribute('content', thumbUrl);
             } else {
                 wrap.style.display = 'none';
-                document.getElementById('og-image').setAttribute('content', 'https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png');
             }
         }
-
+        
         document.getElementById('removeThumbBtn')?.addEventListener('click', () => {
             thumbInput.value = '';
             updateThumbnailUI();
-            if(isEditMode) showToast("Thumbnail removed", "success");
-            else showToast("Removed (edit mode needed)", "info");
-            saveToLocalStorage();
+            if(isEditMode) saveToLocalStorage();
         });
-
-        // Resource management
+        
+        // Resources
         function setNotesUI(url) {
             const actions = document.getElementById('notesActions');
-            const statusDiv = document.getElementById('notesStatus');
-            if(url && url.trim() !== '') {
+            if(url && url.trim()) {
                 actions.style.display = 'flex';
-                statusDiv.style.display = 'flex';
                 document.getElementById('viewNotesBtn').onclick = () => window.open(url, '_blank');
-                document.getElementById('downloadNotesPdfBtn').onclick = () => downloadResource(url, 'notes');
+                document.getElementById('downloadNotesPdfBtn').onclick = () => downloadResource(url);
             } else {
                 actions.style.display = 'none';
-                statusDiv.style.display = 'none';
             }
         }
-
+        
         function setDPPUI(url) {
             const actions = document.getElementById('dppActions');
-            const statusDiv = document.getElementById('dppStatus');
-            if(url && url.trim() !== '') {
+            if(url && url.trim()) {
                 actions.style.display = 'flex';
-                statusDiv.style.display = 'flex';
                 document.getElementById('viewDppBtn').onclick = () => window.open(url, '_blank');
-                document.getElementById('downloadDppPdfBtn').onclick = () => downloadResource(url, 'dpp');
+                document.getElementById('downloadDppPdfBtn').onclick = () => downloadResource(url);
             } else {
                 actions.style.display = 'none';
-                statusDiv.style.display = 'none';
             }
         }
-
-        function downloadResource(url, type) {
-            if(!url) return;
+        
+        function downloadResource(url) {
             const a = document.createElement('a');
             a.href = url;
             a.target = '_blank';
-            a.download = url.split('/').pop() || `${type}_resource.pdf`;
+            a.download = url.split('/').pop() || 'resource';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            showToast(`Downloading ${type}...`, "success");
+            showToast(`Download started`);
         }
-
-        // Session & bookmarks
+        
+        // Session management
         function getSessionObject() {
             return {
-                video: videoInput.value,
+                manifest: manifestInput.value,
                 thumbnail: thumbInput.value,
                 notes: notesInput.value,
-                dpp: dppInput.value,
-                ts: Date.now()
+                dpp: dppInput.value
             };
         }
-
+        
         function saveSession() {
-            const sess = getSessionObject();
-            localStorage.setItem('learnix_last_session', JSON.stringify(sess));
-            showToast("Session saved locally", "success");
+            localStorage.setItem('learnix_session', JSON.stringify(getSessionObject()));
+            showToast("Session saved");
         }
-
+        
         function loadSession() {
-            const raw = localStorage.getItem('learnix_last_session');
-            if(!raw) { showToast("No saved session", "error"); return; }
+            const raw = localStorage.getItem('learnix_session');
+            if(!raw) { showToast("No saved session"); return; }
             try {
                 const s = JSON.parse(raw);
-                videoInput.value = s.video || '';
+                manifestInput.value = s.manifest || '';
                 thumbInput.value = s.thumbnail || '';
                 notesInput.value = s.notes || '';
                 dppInput.value = s.dpp || '';
                 updateThumbnailUI();
                 setNotesUI(notesInput.value);
                 setDPPUI(dppInput.value);
-                if(s.video) showToast("Session loaded (video ready)", "success");
-                else showToast("Session loaded", "success");
-            } catch(e) { showToast("Corrupted session", "error"); }
+                showToast("Session loaded");
+            } catch(e) { showToast("Error loading session"); }
         }
-
+        
         function exportLinks() {
             const obj = getSessionObject();
-            const text = `📺 LEARNIX SESSION\nVideo: ${obj.video || '—'}\nThumbnail: ${obj.thumbnail || '—'}\nNotes: ${obj.notes || '—'}\nDPP: ${obj.dpp || '—'}\n— Safe share —`;
+            const text = `LEARNIX SESSION\nManifest: ${obj.manifest}\nThumbnail: ${obj.thumbnail || '—'}\nNotes: ${obj.notes || '—'}\nDPP: ${obj.dpp || '—'}`;
             document.getElementById('exportContent').innerText = text;
             document.getElementById('exportModal').style.display = 'flex';
         }
-
-        function bookmarkCurrent() {
-            let bookmarks = JSON.parse(localStorage.getItem('learnix_bookmarks') || '[]');
-            const newBook = getSessionObject();
-            newBook.title = `Bookmark ${new Date().toLocaleTimeString()}`;
-            bookmarks.push(newBook);
-            localStorage.setItem('learnix_bookmarks', JSON.stringify(bookmarks));
-            showToast("Bookmark added", "success");
-        }
-
-        // Edit Mode (password: murlikumar65@)
-        function setEditMode(active) {
-            isEditMode = active;
-            const inputs = [videoInput, thumbInput, notesInput, dppInput];
-            const locks = [mainLock, thumbLock, notesLock, dppLock];
-            if(active) {
-                inputs.forEach(inp => { inp.classList.remove('blurred'); inp.readOnly = false; });
-                locks.forEach(lock => { if(lock) lock.style.display = 'none'; });
-                editLockBtn.innerHTML = '<i class="fas fa-unlock-alt"></i>';
-                editLockBtn.style.background = 'rgba(0,224,161,0.2)';
-                showToast("✏️ Edit Mode ACTIVE – you can modify URLs", "success");
-                localStorage.setItem('editModePermanent', 'true');
-            } else {
-                inputs.forEach(inp => { inp.classList.add('blurred'); inp.readOnly = true; });
-                locks.forEach(lock => { if(lock) lock.style.display = 'flex'; });
-                editLockBtn.innerHTML = '<i class="fas fa-lock"></i>';
-                editLockBtn.style.background = '';
-                localStorage.removeItem('editModePermanent');
-                showToast("🔒 Edit Mode locked", "info");
-            }
-        }
-
-        function checkPersistedEditMode() {
-            const wasEdit = localStorage.getItem('editModePermanent') === 'true';
-            if(wasEdit) setEditMode(true);
-        }
-
-        function validateAndUnlock(password) {
-            const stored = localStorage.getItem('editPassword');
-            if(!stored) localStorage.setItem('editPassword', 'murlikumar65@');
-            const validPass = (password === localStorage.getItem('editPassword'));
-            if(validPass) {
-                setEditMode(true);
-                document.getElementById('passwordModal').style.display = 'none';
-                document.getElementById('adminPassInput').value = '';
-            } else {
-                showToast("Wrong password! Access denied", "error");
-            }
-        }
-
-        // Resource change listeners (only when edit mode)
-        function attachEditListeners() {
-            notesInput.addEventListener('change', () => { if(isEditMode) { setNotesUI(notesInput.value); saveToLocalStorage(); } });
-            dppInput.addEventListener('change', () => { if(isEditMode) { setDPPUI(dppInput.value); saveToLocalStorage(); } });
-            thumbInput.addEventListener('input', () => { if(isEditMode) { updateThumbnailUI(); saveToLocalStorage(); } });
-            videoInput.addEventListener('change', () => { if(isEditMode) saveToLocalStorage(); });
-        }
-
+        
         function saveToLocalStorage() {
-            if(isEditMode) {
-                const sess = getSessionObject();
-                localStorage.setItem('learnix_autosave', JSON.stringify(sess));
-            }
+            if(isEditMode) localStorage.setItem('learnix_autosave', JSON.stringify(getSessionObject()));
         }
-
+        
         function restoreAutosave() {
             const auto = localStorage.getItem('learnix_autosave');
             if(auto) {
                 try {
-                    const saved = JSON.parse(auto);
-                    if(saved.video) videoInput.value = saved.video;
-                    if(saved.thumbnail) thumbInput.value = saved.thumbnail;
-                    if(saved.notes) notesInput.value = saved.notes;
-                    if(saved.dpp) dppInput.value = saved.dpp;
+                    const s = JSON.parse(auto);
+                    if(s.manifest) manifestInput.value = s.manifest;
+                    if(s.thumbnail) thumbInput.value = s.thumbnail;
+                    if(s.notes) notesInput.value = s.notes;
+                    if(s.dpp) dppInput.value = s.dpp;
                     updateThumbnailUI();
                     setNotesUI(notesInput.value);
                     setDPPUI(dppInput.value);
                 } catch(e) {}
             }
         }
-
-        // reset everything
+        
         function fullReset() {
-            if(!isEditMode) { showToast("Unlock edit mode to reset", "error"); return; }
-            videoInput.value = '';
+            if(!isEditMode) { showToast("Unlock edit mode to reset", true); return; }
+            manifestInput.value = '';
             thumbInput.value = '';
             notesInput.value = '';
             dppInput.value = '';
@@ -685,71 +563,122 @@
             setNotesUI('');
             setDPPUI('');
             destroyDash();
-            videoPlayer.poster = '';
-            localStorage.removeItem('learnix_autosave');
-            showToast("All fields cleared (edit mode)", "success");
+            showToast("All fields cleared");
         }
-
-        // Build share URL (urlsafe base64)
+        
         function buildShareUrl() {
-            let baseUrl = window.location.href.split('?')[0];
-            let params = new URLSearchParams();
-            if(videoInput.value) params.set('v', btoa(videoInput.value));
-            if(notesInput.value) params.set('n', btoa(notesInput.value));
-            if(dppInput.value) params.set('d', btoa(dppInput.value));
-            if(thumbInput.value) params.set('t', btoa(thumbInput.value));
-            return params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
+            const obj = getSessionObject();
+            const data = btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+            return window.location.href.split('?')[0] + '?data=' + encodeURIComponent(data);
         }
-
-        function loadFromURLParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if(urlParams.has('v')) try { videoInput.value = atob(urlParams.get('v')); } catch(e) {}
-            if(urlParams.has('n')) try { notesInput.value = atob(urlParams.get('n')); setNotesUI(notesInput.value); } catch(e) {}
-            if(urlParams.has('d')) try { dppInput.value = atob(urlParams.get('d')); setDPPUI(dppInput.value); } catch(e) {}
-            if(urlParams.has('t')) try { thumbInput.value = atob(urlParams.get('t')); updateThumbnailUI(); } catch(e) {}
+        
+        function loadFromShare() {
+            const params = new URLSearchParams(window.location.search);
+            if(params.has('data')) {
+                try {
+                    const decoded = decodeURIComponent(params.get('data'));
+                    const s = JSON.parse(unescape(atob(decoded)));
+                    if(s.manifest) manifestInput.value = s.manifest;
+                    if(s.thumbnail) thumbInput.value = s.thumbnail;
+                    if(s.notes) notesInput.value = s.notes;
+                    if(s.dpp) dppInput.value = s.dpp;
+                    updateThumbnailUI();
+                    setNotesUI(notesInput.value);
+                    setDPPUI(dppInput.value);
+                    showToast("Shared session loaded");
+                } catch(e) { console.error("Share load failed"); }
+            }
         }
-
-        function openShareModal() {
-            const shareField = document.getElementById('shareLinkField');
-            shareField.value = buildShareUrl();
-            document.getElementById('shareModal').style.display = 'flex';
+        
+        // Edit Mode (password: murlikumar65@)
+        function setEditMode(active) {
+            isEditMode = active;
+            const inputs = [manifestInput, thumbInput, notesInput, dppInput];
+            const locks = ['mainUrlLock', 'thumbLock', 'notesLock', 'dppLock'];
+            if(active) {
+                inputs.forEach(inp => { inp.classList.remove('blurred'); inp.readOnly = false; });
+                locks.forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
+                document.getElementById('editLockBtn').innerHTML = '<i class="fas fa-unlock-alt"></i>';
+                showToast("✏️ Edit Mode ON");
+                localStorage.setItem('editModePermanent', 'true');
+            } else {
+                inputs.forEach(inp => { inp.classList.add('blurred'); inp.readOnly = true; });
+                locks.forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'flex'; });
+                document.getElementById('editLockBtn').innerHTML = '<i class="fas fa-lock"></i>';
+                localStorage.removeItem('editModePermanent');
+                showToast("🔒 Edit Mode OFF");
+            }
         }
-
-        // event binding
-        playBtn.addEventListener('click', playCurrentVideo);
-        resetAll.addEventListener('click', fullReset);
-        editLockBtn.addEventListener('click', () => { document.getElementById('passwordModal').style.display = 'flex'; });
-        document.getElementById('unlockBtn').addEventListener('click', () => { validateAndUnlock(document.getElementById('adminPassInput').value); });
-        document.getElementById('cancelPassBtn').addEventListener('click', () => { document.getElementById('passwordModal').style.display = 'none'; });
+        
+        function validateAndUnlock(password) {
+            const stored = localStorage.getItem('editPassword');
+            if(!stored) localStorage.setItem('editPassword', 'murlikumar65@');
+            if(password === localStorage.getItem('editPassword')) {
+                setEditMode(true);
+                document.getElementById('passwordModal').style.display = 'none';
+                document.getElementById('adminPassInput').value = '';
+            } else {
+                showToast("Wrong password!", true);
+            }
+        }
+        
+        function checkPersistedEditMode() {
+            if(localStorage.getItem('editModePermanent') === 'true') setEditMode(true);
+        }
+        
+        // Event listeners
+        document.getElementById('playStreamBtn').addEventListener('click', playStream);
+        document.getElementById('resetAllBtn').addEventListener('click', fullReset);
+        document.getElementById('editLockBtn').addEventListener('click', () => document.getElementById('passwordModal').style.display = 'flex');
+        document.getElementById('unlockBtn').addEventListener('click', () => validateAndUnlock(document.getElementById('adminPassInput').value));
+        document.getElementById('cancelPassBtn').addEventListener('click', () => document.getElementById('passwordModal').style.display = 'none');
         document.getElementById('saveSessionBtn').addEventListener('click', saveSession);
         document.getElementById('loadSessionBtn').addEventListener('click', loadSession);
         document.getElementById('exportLinksBtn').addEventListener('click', exportLinks);
-        document.getElementById('bookmarkBtn').addEventListener('click', bookmarkCurrent);
-        document.getElementById('globalShareBtn').addEventListener('click', openShareModal);
-        document.getElementById('copyShareBtn').addEventListener('click', () => { let f=document.getElementById('shareLinkField'); f.select(); navigator.clipboard.writeText(f.value); showToast("Share link copied"); });
+        document.getElementById('globalShareBtn').addEventListener('click', () => {
+            document.getElementById('shareLinkField').value = buildShareUrl();
+            document.getElementById('shareModal').style.display = 'flex';
+        });
+        document.getElementById('copyShareBtn').addEventListener('click', () => {
+            const field = document.getElementById('shareLinkField');
+            field.select();
+            navigator.clipboard.writeText(field.value);
+            showToast("Copied!");
+        });
         document.getElementById('closeShareModal').addEventListener('click', () => document.getElementById('shareModal').style.display = 'none');
-        document.getElementById('copyExportBtn').addEventListener('click', () => { let txt=document.getElementById('exportContent').innerText; navigator.clipboard.writeText(txt); showToast("Copied export"); });
+        document.getElementById('copyExportBtn').addEventListener('click', () => {
+            const text = document.getElementById('exportContent').innerText;
+            navigator.clipboard.writeText(text);
+            showToast("Copied!");
+        });
         document.getElementById('closeExportBtn').addEventListener('click', () => document.getElementById('exportModal').style.display = 'none');
         
-        // Theme toggle (light/dark)
-        const themeBtn = document.getElementById('themeToggleBtn');
-        themeBtn.addEventListener('click', () => {
+        // Theme toggle
+        document.getElementById('themeToggleBtn').addEventListener('click', () => {
             document.documentElement.classList.toggle('light-theme');
-            const isLight = document.documentElement.classList.contains('light-theme');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('light-theme') ? 'light' : 'dark');
         });
         if(localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light-theme');
         
-        // init auto restore
+        // Save on edit
+        [manifestInput, thumbInput, notesInput, dppInput].forEach(inp => {
+            if(inp) inp.addEventListener('change', () => { if(isEditMode) saveToLocalStorage(); });
+        });
+        thumbInput.addEventListener('input', updateThumbnailUI);
+        
+        // Initialize
         restoreAutosave();
-        loadFromURLParams();
+        loadFromShare();
         checkPersistedEditMode();
-        attachEditListeners();
         updateThumbnailUI();
         setNotesUI(notesInput.value);
         setDPPUI(dppInput.value);
         AOS.init({ duration: 600, once: true });
-        if(videoInput.value.trim()) showToast("DASH stream ready. Click Play.", "info");
+        
+        // Pre-enable interceptor so it's ready
+        enableXHRInterceptor();
+        
+        showToast("Ready! Auth interceptor active. Every segment gets URLPrefix, Expires, KeyName, Signature");
     })();
 </script>
 </body>
