@@ -2,603 +2,906 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>DASH Smart Player · Dynamic Quality from MPD</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>LEARNIX PLAYER - Secure DASH & HLS Platform</title>
+    <meta property="og:image" content="https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png" id="og-image">
+
+    <!-- AdSense Code -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4386953840556147"
+     crossorigin="anonymous"></script>
+
+    <link rel="icon" href="https://i.supaimg.com/5aa6f3e6-1291-4b63-879e-7870fcdac1d6.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
+        :root {
+            --primary: #00E0A1;
+            --primary-dark: #00B884;
+            --primary-glow: 0 0 10px rgba(0, 224, 161, 0.7), 0 0 20px rgba(0, 224, 161, 0.4);
+            --secondary: #6C63FF;
+            --secondary-glow: 0 0 10px rgba(108, 99, 255, 0.5);
+            --bg-dark: #0A1128;
+            --bg-darker: #050A1D;
+            --bg-card: #131C3F;
+            --text-light: #FFFFFF;
+            --text-muted: #A0AEC0;
+            --border-light: rgba(0, 224, 161, 0.3);
+            --border-dark: rgba(0, 224, 161, 0.1);
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            --radius: 16px;
+        }
+
+        :root.light-theme {
+            --primary: #00B884;
+            --primary-dark: #00956A;
+            --primary-glow: 0 0 10px rgba(0, 184, 132, 0.5);
+            --secondary: #5A52D3;
+            --bg-dark: #F5F7FA;
+            --bg-darker: #E4E7EB;
+            --bg-card: #FFFFFF;
+            --text-light: #1A202C;
+            --text-muted: #718096;
+            --border-light: rgba(0, 184, 132, 0.3);
+            --border-dark: rgba(0, 184, 132, 0.1);
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        :root {
-            --primary: #00E5A0;
-            --primary-glow: 0 0 12px rgba(0,229,160,0.5);
-            --bg-1: #0A0F1F;
-            --bg-2: #0C1225;
-            --card-bg: rgba(18, 25, 45, 0.85);
-            --glass-border: rgba(0, 229, 160, 0.25);
-            --text-light: #F1F5F9;
-            --text-dim: #94A3B8;
-            --radius-xl: 24px;
-            --radius-lg: 16px;
-        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at 10% 20%, var(--bg-1), var(--bg-2));
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
             color: var(--text-light);
-            min-height: 100vh;
-            padding: 20px 24px 40px;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            overflow-x: hidden;
         }
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.5);
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
-        .container { max-width: 1400px; margin: 0 auto; }
-        h1 {
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, var(--primary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 1.8rem;
-        }
-        .url-area { margin: 20px 0 24px; }
-        .url-input-wrapper { display: flex; gap: 12px; flex-wrap: wrap; }
-        input {
-            flex: 1;
-            padding: 16px 20px;
-            background: rgba(10, 15, 30, 0.8);
-            border: 1px solid var(--glass-border);
-            border-radius: 60px;
-            color: white;
-            font-size: 0.9rem;
-            font-family: monospace;
-            transition: 0.2s;
-        }
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0,229,160,0.2);
-        }
-        button {
-            background: linear-gradient(105deg, var(--primary), #00b87a);
-            border: none;
-            padding: 0 28px;
-            border-radius: 60px;
-            font-weight: 700;
-            color: #0A0F1F;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        button:hover { transform: scale(1.02); box-shadow: var(--primary-glow); }
-        .player-section { margin: 28px 0; }
-        .video-container {
-            background: #000;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            aspect-ratio: 16 / 9;
-            box-shadow: 0 20px 35px -10px black;
-        }
-        video { width: 100%; height: 100%; }
-        .quality-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 20px 0 16px;
-            align-items: center;
-        }
-        .quality-btn {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(0,229,160,0.3);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-weight: 500;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-        .quality-btn.active { background: var(--primary); color: #0A0F1F; border-color: var(--primary); }
-        .quality-btn.disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.2); }
-        .badge-info {
-            background: rgba(0,229,160,0.15);
-            border-radius: 40px;
-            padding: 6px 14px;
-            font-size: 0.75rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .inspector-grid {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-        }
-        .url-card {
-            background: rgba(0,0,0,0.5);
-            border-radius: 20px;
-            padding: 14px;
-            border-left: 4px solid var(--primary);
-            font-size: 0.7rem;
-            word-break: break-all;
-        }
-        .url-card-header {
+
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            padding: 25px 0;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-dark);
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 15px;
         }
-        .copy-btn {
-            background: rgba(0,229,160,0.2);
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            gap: 4px;
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            height: 55px;
+            filter: drop-shadow(0 0 5px var(--primary));
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            text-shadow: var(--primary-glow);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            border: none;
             cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
         }
-        .status-badge { font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; background: #1e293b; margin-top: 6px; }
-        .status-success { color: #4ade80; }
-        .status-error { color: #f87171; }
-        .status-loading { color: #fbbf24; }
-        .log-console {
-            margin-top: 30px;
-            background: rgba(0,0,0,0.5);
+
+        .btn-icon {
+            width: 45px;
+            height: 45px;
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--bg-darker);
+            box-shadow: var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(0, 224, 161, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .player-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background-color: #000;
+            aspect-ratio: 16/9;
+            position: relative;
+            border: 1px solid var(--border-light);
+        }
+
+        #video-player {
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+        }
+
+        .player-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-dark) 100%);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .thumbnail-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .thumbnail-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .play-button-large {
+            font-size: 5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(0, 224, 161, 0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .thumbnail-overlay:hover .play-button-large {
+            transform: scale(1.1);
+        }
+
+        .input-group {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .badge {
+            background-color: var(--primary);
+            color: var(--bg-darker);
+            padding: 5px 12px;
             border-radius: 20px;
-            padding: 16px;
-            font-family: monospace;
-            font-size: 0.75rem;
-            max-height: 220px;
-            overflow-y: auto;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 12px;
         }
-        @media (max-width: 720px) { body { padding: 16px; } .glass-card { padding: 18px; } }
-        .spinner-small { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 0.6s linear infinite; vertical-align: middle; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .video-input-container, .thumbnail-input-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .url-input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 224, 161, 0.2);
+        }
+
+        .url-input.blurred {
+            filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.02);
+            cursor: not-allowed;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(19, 28, 63, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius);
+            cursor: pointer;
+            backdrop-filter: blur(2px);
+        }
+
+        .lock-overlay i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .play-btn {
+            flex: 2;
+        }
+
+        .reset-btn {
+            flex: 1;
+        }
+
+        .resources-section {
+            margin: 40px 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .resource-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 25px;
+            border-top: 3px solid var(--primary);
+        }
+
+        .resource-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .resource-icon {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .resource-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .resource-input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+        }
+
+        .resource-input.blurred {
+            filter: blur(5px);
+        }
+
+        .resource-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0, 224, 161, 0.1);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+        }
+
+        .horizontal-buttons {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 12px 0;
+            margin-top: 20px;
+        }
+
+        .horizontal-btn {
+            white-space: nowrap;
+            padding: 10px 18px;
+        }
+
+        .pdf-download-btn {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF4757 100%);
+            color: white;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .share-components {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .share-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            color: var(--primary);
+            transition: 0.2s;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .telegram-cta {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 100;
+        }
+
+        .telegram-btn {
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border-radius: 40px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 35px;
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-card);
+            padding: 12px 24px;
+            border-radius: 40px;
+            display: none;
+            z-index: 1100;
+            font-weight: 500;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            .share-components { bottom: 15px; right: 15px; gap: 8px; }
+            .telegram-cta { bottom: 15px; left: 15px; }
+            .btn { padding: 8px 16px; }
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="glass-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-            <h1><i class="fas fa-microchip" style="color: var(--primary);"></i> DASH Dynamic Qualities</h1>
-            <div><i class="fas fa-chart-line"></i> Parses MPD → validates init.mp4 → shows only working resolutions</div>
+    <header>
+        <div class="logo-container">
+            <img src="https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png" alt="LEARNIX" class="logo">
+            <div class="logo-text">LEARNIX PLAYER</div>
         </div>
-
-        <div class="url-area">
-            <div class="url-input-wrapper">
-                <input type="text" id="mpdUrlInput" placeholder="Paste signed MPD URL (with ?URLPrefix=...Expires...Signature...)" value="https://sec-prod-mediacdn.pw.live/e91ca50a-ce23-4bce-9c74-819a7b6d9e68/master.mpd?URLPrefix=aHR0cHM6Ly9zZWMtcHJvZC1tZWRpYWNkbi5wdy5saXZlL2U5MWNhNTBhLWNlMjMtNGJjZS05Yzc0LTgxOWE3YjZkOWU2OA&Expires=1778539030&KeyName=pw-prod-key&Signature=p934lsmcYFvhC8wgX9EfxaauhD4YoJ2nu-JqdDdMFXZeYWSW-Esp-GokfL37-y28FnoNkZLlVB2cZpSqFJ3SBg">
-                <button id="loadBtn"><i class="fas fa-cloud-download-alt"></i> Parse MPD & Detect</button>
-            </div>
-            <div style="font-size: 0.7rem; margin-top: 10px; color: #7e8ba3;"><i class="fas fa-info-circle"></i> Automatically extracts available resolutions from MPD. Qualities that return 404/403 are hidden.</div>
+        <div class="header-actions">
+            <button class="btn btn-icon btn-secondary" id="edit-lock-btn"><i class="fas fa-lock"></i></button>
+            <button class="btn btn-icon btn-secondary" id="share-btn"><i class="fas fa-share-alt"></i></button>
+            <button class="btn btn-icon btn-secondary" id="theme-toggle"><i class="fas fa-sun"></i></button>
         </div>
+    </header>
 
-        <div class="player-section">
-            <div class="video-container">
-                <video id="dashPlayer" controls playsinline disablePictureInPicture="false" style="width:100%;height:100%"></video>
-            </div>
-            
-            <!-- dynamic quality buttons will be injected here -->
-            <div id="qualityPanel" style="margin: 20px 0 12px;">
-                <div class="quality-bar" id="dynamicQualityButtons">
-                    <span style="font-size:0.8rem;"><i class="fas fa-tachometer-alt"></i> Available qualities:</span>
-                    <div class="spinner-small"></div> <span style="font-size:0.7rem;">loading manifest...</span>
+    <section class="hero">
+        <h1 data-aos="fade-up">Premium DASH & HLS Streaming</h1>
+        <p data-aos="fade-up">Supports signed MPD URLs · Auth parameters auto-appended to segments · Secure playback</p>
+
+        <div class="player-container" data-aos="fade-up">
+            <div id="video-player">
+                <div class="player-placeholder" id="player-placeholder">
+                    <img src="" alt="Thumbnail" class="thumbnail-preview" id="thumbnail-preview">
+                    <div class="thumbnail-overlay">
+                        <i class="fas fa-play-circle play-button-large"></i>
+                        <div class="play-text">Click to Play</div>
+                    </div>
                 </div>
             </div>
-            <div id="highestQualityBadge" style="text-align: right; margin-top: 5px;"></div>
+            <div class="spinner" id="loading-spinner" style="display:none; text-align:center; margin-top:10px;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
         </div>
 
-        <!-- inspector grid: only qualities that exist -->
-        <div id="inspectorSection" style="margin-top: 10px;">
-            <h3 style="font-size: 1.1rem;"><i class="fas fa-link"></i> Validated init.mp4 URLs (token preserved)</h3>
-            <div class="inspector-grid" id="inspectorGrid"></div>
+        <div class="input-group">
+            <span class="badge">🔐 DASH + HLS + YouTube + Signed MPD</span>
+            <div class="video-input-container">
+                <input type="text" class="url-input blurred" id="video-url" placeholder="Enter lecture URL (MPD/m3u8/YouTube)" readonly>
+                <div class="lock-overlay" id="video-lock-overlay"><i class="fas fa-lock"></i></div>
+            </div>
+            <div class="thumbnail-input-container">
+                <input type="text" class="url-input blurred" id="thumbnail-url" placeholder="Thumbnail image URL (optional)" readonly>
+                <div class="lock-overlay" id="thumbnail-lock-overlay"><i class="fas fa-lock"></i></div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary play-btn" id="play-btn"><i class="fas fa-play"></i> Play Now</button>
+                <button class="btn btn-secondary reset-btn" id="reset-btn"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+            <div class="url-examples" style="font-size:0.8rem; margin-top:10px;">
+                <details><summary>🔗 Example: DASH with signature (auto auth propagation)</summary>
+                    <code style="word-break:break-word;">https://cdn.../master.mpd?URLPrefix=...&amp;Expires=...&amp;Signature=...</code>
+                </details>
+            </div>
         </div>
+    </section>
 
-        <!-- debug console -->
-        <div class="log-console" id="debugConsole">
-            <i class="fas fa-terminal"></i> [system] Paste MPD URL and click "Parse MPD & Detect".<br>
+    <section class="resources-section" data-aos="fade-up">
+        <h3>📚 Study Resources</h3>
+        <div class="resources-grid">
+            <div class="resource-card">
+                <div class="resource-header"><i class="fas fa-file-alt resource-icon"></i><h4>Notes</h4></div>
+                <div class="resource-input-group">
+                    <input type="text" class="resource-input blurred" id="notes-url" placeholder="PDF / Google Docs URL" readonly>
+                    <div class="lock-overlay" id="notes-lock-overlay"><i class="fas fa-lock"></i></div>
+                </div>
+                <div id="notes-status" style="display:none;" class="resource-status"><span>✅ Notes ready</span></div>
+                <button class="btn btn-secondary" id="view-notes-btn" style="display:none;"><i class="fas fa-eye"></i> View Notes</button>
+            </div>
+            <div class="resource-card">
+                <div class="resource-header"><i class="fas fa-book resource-icon"></i><h4>DPP</h4></div>
+                <div class="resource-input-group">
+                    <input type="text" class="resource-input blurred" id="dpp-url" placeholder="DPP PDF URL" readonly>
+                    <div class="lock-overlay" id="dpp-lock-overlay"><i class="fas fa-lock"></i></div>
+                </div>
+                <div id="dpp-status" style="display:none;" class="resource-status"><span>📄 DPP available</span></div>
+                <button class="btn btn-secondary" id="view-dpp-btn" style="display:none;"><i class="fas fa-external-link-alt"></i> View DPP</button>
+            </div>
         </div>
-    </div>
+        <div class="horizontal-buttons">
+            <button class="btn btn-secondary horizontal-btn" id="save-session-btn"><i class="fas fa-save"></i> Save Session</button>
+            <button class="btn btn-secondary horizontal-btn" id="export-links-btn"><i class="fas fa-share-alt"></i> Export Links</button>
+            <button class="btn pdf-download-btn horizontal-btn" id="download-all-pdf-btn"><i class="fas fa-file-pdf"></i> Download All PDFs</button>
+        </div>
+    </section>
+
+    <footer style="text-align:center; margin-top:60px; padding:30px 0;"><p>© 2025 LEARNIX PLAYER — Secure DASH streaming with signature propagation</p></footer>
 </div>
 
+<div class="share-components">
+    <div class="share-btn" id="whatsapp-share"><i class="fab fa-whatsapp"></i></div>
+    <div class="share-btn" id="telegram-share"><i class="fab fa-telegram"></i></div>
+    <div class="share-btn" id="copy-link"><i class="fas fa-link"></i></div>
+</div>
+<div class="telegram-cta"><a href="#" class="telegram-btn" id="telegram-join"><i class="fab fa-telegram"></i> Join Telegram</a></div>
+
+<!-- Modals -->
+<div class="modal" id="password-modal"><div class="modal-content"><i class="fas fa-lock" style="font-size:3rem; color:var(--primary);"></i><h3>Secure Edit Mode</h3><input type="password" id="password-input" placeholder="Enter password" style="width:100%; margin:15px 0; padding:12px;"><button id="submit-password" class="btn btn-primary">Unlock</button><button id="cancel-password" class="btn btn-secondary">Cancel</button><p style="margin-top:10px;">Default: murlikumar65@</p></div></div>
+<div class="modal" id="share-modal"><div class="modal-content"><h3>Share Session</h3><input type="text" id="share-url" readonly style="width:100%; margin:15px 0; padding:10px;"><button id="copy-share-url" class="btn btn-primary">Copy Link</button></div></div>
+<div class="modal" id="export-modal"><div class="modal-content"><h3>Export Session</h3><textarea id="export-data" rows="4" style="width:100%; margin:15px 0;" readonly></textarea><button id="close-export-modal" class="btn btn-secondary">Close</button></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
 <script>
     // ---------- GLOBALS ----------
-    const mpdInput = document.getElementById('mpdUrlInput');
-    const loadBtn = document.getElementById('loadBtn');
-    const videoEl = document.getElementById('dashPlayer');
-    const dynamicQualityDiv = document.getElementById('dynamicQualityButtons');
-    const inspectorGrid = document.getElementById('inspectorGrid');
-    const debugConsole = document.getElementById('debugConsole');
-    const highestBadgeSpan = document.getElementById('highestQualityBadge');
+    let hlsPlayer = null, dashPlayer = null, currentPlayerType = null;
+    let activeAuthParams = {};      // store signature parameters for DASH segment injection
+    let currentMpdBaseUrl = "";
 
-    let dashPlayerInstance = null;
-    let currentBasePath = '';      // https://cdn.../e91ca50a.../
-    let currentQueryParams = '';    // "?URLPrefix=...&Expires=...&Signature=..."
-    let availableQualitiesMap = new Map(); // key: height (number) -> { url, working, representationId }
-    let sortedWorkingHeights = [];   // [360,480,720] ascending
-    let highestWorkingQuality = null;
-    let currentActiveQuality = 'auto';
-
-    // Fixed headers
-    const CUSTOM_HEADERS = {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Mobile Safari/537.36',
-        'Referer': 'https://movie-dusky-three.vercel.app/'
-    };
-
-    // ---------- helpers ----------
-    function addLog(msg, type = 'info') {
-        const time = new Date().toLocaleTimeString();
-        const icon = type === 'error' ? '❌' : (type === 'success' ? '✅' : '🔍');
-        debugConsole.innerHTML += `<div>${icon} [${time}] ${msg}</div>`;
-        debugConsole.scrollTop = debugConsole.scrollHeight;
-        console.log(`[DASH] ${msg}`);
-    }
-
-    // Parse MPD URL -> base CDN path (without master.mpd) + query string
-    function parseMpdUrl(fullUrl) {
+    // Helper: extract auth params from URL (URLPrefix, Expires, KeyName, Signature)
+    function extractAuthParams(url) {
         try {
-            const urlObj = new URL(fullUrl);
-            const baseManifestPath = urlObj.origin + urlObj.pathname; // full path to master.mpd
-            // extract root CDN folder: e.g., https://.../e91ca50a-ce23-4bce-9c74-819a7b6d9e68/
-            const rootMatch = baseManifestPath.match(/(https?:\/\/[^/]+\/[^/]+\/[^/]+\/)/);
-            let rootBase = rootMatch ? rootMatch[1] : baseManifestPath.substring(0, baseManifestPath.lastIndexOf('/') + 1);
-            const queryRaw = urlObj.search; // includes '?'
-            return { rootBase, queryRaw, fullParams: urlObj.searchParams };
-        } catch(e) {
-            addLog(`Invalid URL: ${e.message}`, 'error');
-            return null;
-        }
+            const urlObj = new URL(url);
+            const params = ['URLPrefix', 'Expires', 'KeyName', 'Signature'];
+            const extracted = {};
+            params.forEach(p => {
+                if (urlObj.searchParams.has(p)) extracted[p] = urlObj.searchParams.get(p);
+            });
+            return extracted;
+        } catch(e) { return {}; }
     }
 
-    // Build init URL for a specific representation path e.g., "dash/360/init.mp4"
-    function buildInitUrl(resolutionFolder) {
-        if (!currentBasePath) return '';
-        const cleanBase = currentBasePath.endsWith('/') ? currentBasePath.slice(0, -1) : currentBasePath;
-        return `${cleanBase}/dash/${resolutionFolder}/init.mp4${currentQueryParams}`;
-    }
-
-    // Fetch MPD as text, parse XML, extract video representations with height
-    async function fetchAndParseMPD(manifestUrlWithToken) {
-        addLog(`Fetching MPD: ${manifestUrlWithToken.substring(0, 100)}...`);
+    // Append auth parameters to a given URL string (skip if already present)
+    function appendAuthToUrl(baseUrl, authParams) {
+        if (!authParams || Object.keys(authParams).length === 0) return baseUrl;
         try {
-            const response = await fetch(manifestUrlWithToken, { headers: CUSTOM_HEADERS });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const xmlText = await response.text();
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-            if (xmlDoc.querySelector('parsererror')) throw new Error('Invalid XML');
+            const urlObj = new URL(baseUrl, window.location.href);
+            let changed = false;
+            for (const [key, val] of Object.entries(authParams)) {
+                if (!urlObj.searchParams.has(key)) {
+                    urlObj.searchParams.set(key, val);
+                    changed = true;
+                }
+            }
+            return changed ? urlObj.toString() : baseUrl;
+        } catch(e) { return baseUrl; }
+    }
+
+    // DASH Player with REQUEST INTERCEPTOR (critical for signed MPD segments)
+    function initDashWithAuth(mpdUrl, videoElement) {
+        return new Promise((resolve, reject) => {
+            const authParams = extractAuthParams(mpdUrl);
+            activeAuthParams = authParams;
+            currentMpdBaseUrl = mpdUrl.split('?')[0];
             
-            // Find all AdaptationSet with mimeType video/mp4
-            const adaptationSets = xmlDoc.querySelectorAll('AdaptationSet');
-            let videoHeights = new Set();
-            for (let adSet of adaptationSets) {
-                const mimeType = adSet.getAttribute('mimeType') || '';
-                if (mimeType.includes('video')) {
-                    const reps = adSet.querySelectorAll('Representation');
-                    reps.forEach(rep => {
-                        const heightAttr = rep.getAttribute('height');
-                        if (heightAttr) {
-                            const heightInt = parseInt(heightAttr, 10);
-                            if (!isNaN(heightInt)) videoHeights.add(heightInt);
+            if (dashPlayer) dashPlayer.destroy();
+            dashPlayer = dashjs.MediaPlayer().create();
+            dashPlayer.initialize(videoElement, mpdUrl, true);
+            
+            // ---- CORE FIX: Intercept every segment request & add auth params ----
+            if (Object.keys(authParams).length > 0) {
+                dashPlayer.setRequestModifier((request) => {
+                    if (request && request.url) {
+                        let modifiedUrl = appendAuthToUrl(request.url, authParams);
+                        if (modifiedUrl !== request.url) {
+                            request.url = modifiedUrl;
                         }
-                    });
-                }
-            }
-            // also fallback: search any Representation with height
-            if (videoHeights.size === 0) {
-                const allReps = xmlDoc.querySelectorAll('Representation');
-                allReps.forEach(rep => {
-                    const h = rep.getAttribute('height');
-                    if (h) videoHeights.add(parseInt(h,10));
-                });
-            }
-            const qualitiesArray = Array.from(videoHeights).sort((a,b) => a-b);
-            addLog(`📊 MPD parsing complete. Detected heights: ${qualitiesArray.join(', ')}`, 'success');
-            console.log("Available qualities from MPD:", qualitiesArray);
-            return qualitiesArray;
-        } catch (err) {
-            addLog(`MPD fetch/parse error: ${err.message}`, 'error');
-            return [];
-        }
-    }
-
-    // Validate each init.mp4 URL with HEAD request, return working ones
-    async function validateQualitiesWithHead(heightsArray) {
-        const results = [];
-        for (let h of heightsArray) {
-            const initUrl = buildInitUrl(h.toString());
-            if (!initUrl) continue;
-            addLog(`🔍 Checking ${h}p init...`);
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-                const res = await fetch(initUrl, { method: 'HEAD', headers: CUSTOM_HEADERS, signal: controller.signal });
-                clearTimeout(timeoutId);
-                if (res.ok) {
-                    addLog(`✅ ${h}p init.mp4 reachable (${res.status})`, 'success');
-                    results.push({ height: h, url: initUrl, working: true });
-                } else {
-                    addLog(`⛔ ${h}p init.mp4 returned HTTP ${res.status} → unavailable`, 'error');
-                    results.push({ height: h, url: initUrl, working: false });
-                }
-            } catch (err) {
-                addLog(`❌ ${h}p validation error: ${err.message}`, 'error');
-                results.push({ height: h, url: initUrl, working: false });
-            }
-        }
-        return results;
-    }
-
-    // Build UI buttons only for working heights, show highest badge
-    function renderQualityButtons(workingHeights) {
-        dynamicQualityDiv.innerHTML = `<span style="font-size:0.8rem;"><i class="fas fa-tachometer-alt"></i> Available qualities:</span>`;
-        if (!workingHeights.length) {
-            dynamicQualityDiv.innerHTML += `<span style="color:#f87171;"> ⚠️ No working video qualities found. Try different URL.</span>`;
-            return;
-        }
-        // add Auto button always
-        const autoBtn = document.createElement('button');
-        autoBtn.className = `quality-btn ${currentActiveQuality === 'auto' ? 'active' : ''}`;
-        autoBtn.innerText = 'Auto (adaptive)';
-        autoBtn.dataset.height = 'auto';
-        autoBtn.addEventListener('click', () => selectQuality('auto'));
-        dynamicQualityDiv.appendChild(autoBtn);
-
-        workingHeights.forEach(height => {
-            const btn = document.createElement('button');
-            btn.className = `quality-btn ${currentActiveQuality === height.toString() ? 'active' : ''}`;
-            btn.innerText = `${height}p`;
-            btn.dataset.height = height;
-            btn.addEventListener('click', () => selectQuality(height));
-            dynamicQualityDiv.appendChild(btn);
-        });
-
-        // highest quality badge
-        const maxHeight = Math.max(...workingHeights);
-        highestWorkingQuality = maxHeight;
-        highestBadgeSpan.innerHTML = `<div class="badge-info"><i class="fas fa-crown"></i> Highest Available Quality: ${maxHeight}p</div>`;
-        addLog(`🏆 Highest working quality: ${maxHeight}p`, 'success');
-    }
-
-    // generate inspector cards for working qualities only
-    function renderInspector(workingQualities) {
-        inspectorGrid.innerHTML = '';
-        for (let q of workingQualities) {
-            const card = document.createElement('div');
-            card.className = 'url-card';
-            card.innerHTML = `
-                <div class="url-card-header">
-                    <strong>🎬 ${q.height}p init.mp4</strong>
-                    <button class="copy-btn" data-url="${q.url}"><i class="fas fa-copy"></i> Copy</button>
-                </div>
-                <div style="font-size:0.65rem; font-family:monospace; word-break:break-all;">${q.url.substring(0, 110)}...</div>
-                <div class="status-badge"><span class="status-success">✓ validated & working</span></div>
-            `;
-            inspectorGrid.appendChild(card);
-            const copyBtn = card.querySelector('.copy-btn');
-            copyBtn.addEventListener('click', () => {
-                navigator.clipboard.writeText(q.url);
-                addLog(`Copied ${q.height}p init URL`, 'success');
-            });
-        }
-    }
-
-    // ----- DASH player + quality selection -----
-    function destroyPlayer() {
-        if (dashPlayerInstance) {
-            dashPlayerInstance.reset();
-            dashPlayerInstance = null;
-        }
-        videoEl.src = '';
-    }
-
-    function selectQuality(height) {
-        if (!dashPlayerInstance) {
-            addLog("Player not initialized, load stream first", 'error');
-            return;
-        }
-        if (height === 'auto') {
-            dashPlayerInstance.setAutoSwitchQuality(true);
-            currentActiveQuality = 'auto';
-            addLog("🎛️ Quality mode: AUTO (adaptive bitrate)", 'success');
-        } else {
-            const bitrates = dashPlayerInstance.getBitrateInfoListFor('video');
-            if (!bitrates || bitrates.length === 0) {
-                addLog("No bitrate info available yet, try again after stream loads", 'error');
-                return;
-            }
-            let targetIndex = -1;
-            for (let i=0; i<bitrates.length; i++) {
-                if (bitrates[i].height === height) {
-                    targetIndex = i;
-                    break;
-                }
-            }
-            if (targetIndex !== -1) {
-                dashPlayerInstance.setAutoSwitchQuality(false);
-                dashPlayerInstance.setQualityFor('video', targetIndex);
-                currentActiveQuality = height.toString();
-                addLog(`🎯 Switched to ${height}p (manual)`, 'success');
-            } else {
-                addLog(`⚠️ ${height}p not found in DASH manifest, fallback to auto`, 'error');
-                // fallback: auto switch to highest working
-                dashPlayerInstance.setAutoSwitchQuality(true);
-                if (highestWorkingQuality) {
-                    addLog(`↻ Falling back to highest working quality: ${highestWorkingQuality}p`, 'info');
-                }
-                currentActiveQuality = 'auto';
-            }
-        }
-        // update UI button styles
-        document.querySelectorAll('#dynamicQualityButtons .quality-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if ((height === 'auto' && btn.dataset.height === 'auto') || (btn.dataset.height == height)) {
-                btn.classList.add('active');
-            }
-        });
-        if (height === 'auto') {
-            const autoBtn = Array.from(document.querySelectorAll('#dynamicQualityButtons .quality-btn')).find(b => b.dataset.height === 'auto');
-            if (autoBtn) autoBtn.classList.add('active');
-        }
-    }
-
-    // Setup XHR interceptor to add token + headers to all segment requests
-    let interceptorActive = false;
-    let originalOpen = null;
-    function enableInterceptor(queryString) {
-        if (interceptorActive) return;
-        if (!queryString) queryString = currentQueryParams;
-        const tokenSuffix = queryString.startsWith('?') ? queryString.substring(1) : queryString;
-        originalOpen = XMLHttpRequest.prototype.open;
-        XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
-            let modifiedUrl = url;
-            if (url && typeof url === 'string') {
-                const needsToken = (url.includes('.mp4') || url.includes('init.mp4') || url.includes('/dash/') || url.includes('/audio/')) 
-                                    && url.includes('sec-prod-mediacdn.pw.live');
-                if (needsToken && tokenSuffix && !url.includes('URLPrefix=')) {
-                    const separator = modifiedUrl.includes('?') ? '&' : '?';
-                    modifiedUrl = modifiedUrl + separator + tokenSuffix;
-                    if (!modifiedUrl.includes('Expires=')) console.warn("token missing?");
-                }
-            }
-            this._finalUrl = modifiedUrl;
-            return originalOpen.call(this, method, modifiedUrl, async !== false, user, pass);
-        };
-        XMLHttpRequest.prototype.send = function(body) {
-            try {
-                this.setRequestHeader('User-Agent', CUSTOM_HEADERS['User-Agent']);
-                this.setRequestHeader('Referer', CUSTOM_HEADERS['Referer']);
-            } catch(e) {}
-            return originalOpen ? originalOpen.prototype.send?.call(this, body) : XMLHttpRequest.prototype.send.call(this, body);
-        };
-        interceptorActive = true;
-        addLog("🌐 XHR interceptor active: token injected + required headers", 'success');
-    }
-
-    async function initializePlayerWithManifest(cleanManifestUrl) {
-        destroyPlayer();
-        if (!dashjs.supportsMediaSource()) {
-            addLog("Browser does not support DASH", 'error');
-            return false;
-        }
-        dashPlayerInstance = dashjs.MediaPlayer().create();
-        dashPlayerInstance.initialize(videoEl, cleanManifestUrl, true);
-        dashPlayerInstance.updateSettings({ streaming: { buffer: { bufferTimeAtTopQuality: 20 }, abr: { autoSwitchBitrate: { video: true } } } });
-        
-        // add custom headers for manifest request via request modifier
-        if (dashPlayerInstance.getDebug && dashPlayerInstance.getDebug().setRequestModifier) {
-            dashPlayerInstance.getDebug().setRequestModifier((req) => {
-                req.headers = req.headers || {};
-                req.headers['User-Agent'] = CUSTOM_HEADERS['User-Agent'];
-                req.headers['Referer'] = CUSTOM_HEADERS['Referer'];
-                return req;
-            });
-        }
-
-        dashPlayerInstance.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, () => {
-            addLog("🎬 Stream initialized – manifest loaded, segments requested with token", 'success');
-            videoEl.play().catch(e => addLog("autoplay blocked: "+e.message, 'info'));
-            // after manifest loaded, set auto as default quality
-            setTimeout(() => {
-                const bitrates = dashPlayerInstance.getBitrateInfoListFor('video');
-                if (bitrates && bitrates.length) {
-                    console.log("DASH bitrates available:", bitrates.map(b=>`${b.height}p`).join(','));
-                    // if a specific quality was selected re-apply
-                    if (currentActiveQuality !== 'auto' && !isNaN(parseInt(currentActiveQuality))) {
-                        selectQuality(parseInt(currentActiveQuality));
                     }
-                }
-            }, 800);
-        });
-        dashPlayerInstance.on(dashjs.MediaPlayer.events.ERROR, (e) => {
-            addLog(`Player error: ${e.error || 'unknown'}`, 'error');
-            if (e.error === 'manifestError' || (e.event && e.event.error === 'download')) {
-                addLog("Token may be expired or manifest inaccessible", 'error');
+                    return request;
+                });
+                console.log("[DASH] Auth interceptor active for:", authParams);
             }
+            
+            dashPlayer.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, () => {
+                resolve();
+            });
+            dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (e) => {
+                reject(e);
+            });
         });
-        return true;
     }
 
-    // MAIN FLOW
-    async function parseAndLoad() {
-        const fullMpd = mpdInput.value.trim();
-        if (!fullMpd) { addLog("Please paste MPD URL", 'error'); return; }
-        dynamicQualityDiv.innerHTML = `<span style="font-size:0.8rem;"><i class="fas fa-tachometer-alt"></i> Available qualities:</span> <div class="spinner-small"></div> parsing MPD...`;
-        inspectorGrid.innerHTML = '';
-        highestBadgeSpan.innerHTML = '';
+    // YouTube embed
+    function embedYouTube(videoId) {
+        const container = document.getElementById('video-player');
+        container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/${videoId}?modestbranding=1&rel=0&controls=1" frameborder="0" allowfullscreen></iframe>`;
+    }
 
-        const parsed = parseMpdUrl(fullMpd);
-        if (!parsed) return;
-        currentBasePath = parsed.rootBase;
-        currentQueryParams = parsed.queryRaw;
-        addLog(`Base path: ${currentBasePath}`, 'success');
-        addLog(`Token params preserved: ${currentQueryParams.substring(0, 80)}...`, 'success');
-
-        // 1. Fetch MPD, extract heights
-        let heightsFromMPD = await fetchAndParseMPD(fullMpd);
-        if (heightsFromMPD.length === 0) {
-            addLog("No video heights found in MPD. Trying fallback common resolutions.", 'error');
-            heightsFromMPD = [360, 480, 720]; // fallback but will validate
-        }
+    // Main play logic (supports DASH with auto auth propagation)
+    async function playVideo(url) {
+        if (!url) { showToast("Enter video URL first", "error"); return; }
+        showLoading(true);
+        document.getElementById('player-placeholder').style.display = 'none';
         
-        // 2. Validate init URLs with HEAD request
-        const validationResults = await validateQualitiesWithHead(heightsFromMPD);
-        const workingQualities = validationResults.filter(v => v.working === true).map(v => ({ height: v.height, url: v.url }));
-        
-        if (workingQualities.length === 0) {
-            addLog("❌ No working quality streams found. Check token or URL expiry.", 'error');
-            dynamicQualityDiv.innerHTML = `<span><i class="fas fa-exclamation-triangle"></i> No accessible video qualities. Possibly token expired.</span>`;
+        const youtubeId = (url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?\/]+)/) || [])[1];
+        if (youtubeId) {
+            embedYouTube(youtubeId);
+            showLoading(false);
             return;
         }
         
-        const workingHeights = workingQualities.map(q => q.height).sort((a,b)=>a-b);
-        availableQualitiesMap.clear();
-        workingQualities.forEach(wq => availableQualitiesMap.set(wq.height, wq.url));
-        sortedWorkingHeights = workingHeights;
+        // Destroy any existing
+        if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
+        if (dashPlayer) { dashPlayer.destroy(); dashPlayer = null; }
         
-        addLog(`✅ Valid working qualities: ${workingHeights.join(', ')}`, 'success');
-        console.log("Available qualities after validation:", workingHeights);
+        const playerContainer = document.getElementById('video-player');
+        playerContainer.innerHTML = `<video id="main-video" controls style="width:100%; height:100%;"></video>`;
+        const videoElem = document.getElementById('main-video');
         
-        // 3. render quality buttons and inspector
-        renderQualityButtons(workingHeights);
-        renderInspector(workingQualities);
-        
-        // 4. enable interceptor before initializing player (to catch all segment requests)
-        enableInterceptor(currentQueryParams);
-        
-        // 5. Initialize DASH with clean manifest URL (without query params, interceptor will add to segments)
-        const cleanManifest = currentBasePath + 'master.mpd';
-        await initializePlayerWithManifest(cleanManifest);
-        
-        // optional: after player ready, auto switch to highest working if needed
-        dashPlayerInstance?.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, () => {
-            // set auto quality as default, but we update badge
-            currentActiveQuality = 'auto';
-            document.querySelectorAll('#dynamicQualityButtons .quality-btn').forEach(btn => btn.classList.remove('active'));
-            const autoBtn = Array.from(document.querySelectorAll('#dynamicQualityButtons .quality-btn')).find(b => b.dataset.height === 'auto');
-            if (autoBtn) autoBtn.classList.add('active');
-        });
+        try {
+            if (url.includes('.mpd') || url.includes('master.mpd')) {
+                // DASH stream with signature support
+                await initDashWithAuth(url, videoElem);
+                showLoading(false);
+                videoElem.play().catch(e => showToast("Click play to start", "info"));
+            } 
+            else if (url.includes('.m3u8') && Hls.isSupported()) {
+                hlsPlayer = new Hls();
+                hlsPlayer.loadSource(url);
+                hlsPlayer.attachMedia(videoElem);
+                hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => { showLoading(false); videoElem.play(); });
+                hlsPlayer.on(Hls.Events.ERROR, (_, data) => { showLoading(false); showToast("HLS error", "error"); });
+            }
+            else {
+                videoElem.src = url;
+                videoElem.addEventListener('canplay', () => { showLoading(false); videoElem.play(); });
+                videoElem.addEventListener('error', () => { showLoading(false); showToast("Cannot load video", "error"); });
+            }
+        } catch(err) {
+            showLoading(false);
+            showToast("Failed to load stream: " + err.message, "error");
+            console.error(err);
+        }
     }
     
-    // event binding
-    loadBtn.addEventListener('click', parseAndLoad);
-    
-    // if default url exists, auto parse on load with small delay
-    window.addEventListener('load', () => {
-        if (mpdInput.value.trim()) {
-            setTimeout(() => parseAndLoad().catch(e => addLog(e.message, 'error')), 300);
+    // ---------- RESOURCE & UI HELPERS ----------
+    function showToast(msg, type="") {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = "block";
+        setTimeout(() => toast.style.display = "none", 3000);
+    }
+    function showLoading(show) { document.getElementById('loading-spinner').style.display = show ? "block" : "none"; }
+    function updateShareUrl() {
+        const video = document.getElementById('video-url').value;
+        const notes = document.getElementById('notes-url').value;
+        const dpp = document.getElementById('dpp-url').value;
+        const thumb = document.getElementById('thumbnail-url').value;
+        const params = new URLSearchParams();
+        if(video) params.set('play', btoa(video));
+        if(notes) params.set('notes', btoa(notes));
+        if(dpp) params.set('dpp', btoa(dpp));
+        if(thumb) params.set('thumb', btoa(thumb));
+        const shareUrl = window.location.origin + window.location.pathname + (params.toString() ? '?'+params.toString() : '');
+        const shareInput = document.getElementById('share-url');
+        if(shareInput) shareInput.value = shareUrl;
+        return shareUrl;
+    }
+    function handleNotesAdded(url) {
+        document.getElementById('notes-status').style.display = 'flex';
+        document.getElementById('view-notes-btn').style.display = 'inline-flex';
+        document.getElementById('view-notes-btn').onclick = () => window.open(url, '_blank');
+        updateShareUrl();
+    }
+    function handleDPPAdded(url) {
+        document.getElementById('dpp-status').style.display = 'flex';
+        document.getElementById('view-dpp-btn').style.display = 'inline-flex';
+        document.getElementById('view-dpp-btn').onclick = () => window.open(url, '_blank');
+        updateShareUrl();
+    }
+    function updateThumbnailPreview(url) {
+        const thumbImg = document.getElementById('thumbnail-preview');
+        if(url && url.match(/\.(jpg|jpeg|png|webp|gif)/i)) {
+            thumbImg.src = url;
+            thumbImg.style.display = 'block';
+            localStorage.setItem('thumbUrl', url);
+            document.getElementById('og-image').setAttribute('content', url);
+        } else {
+            thumbImg.style.display = 'none';
+            localStorage.removeItem('thumbUrl');
         }
+    }
+    function resetAll() {
+        if(hlsPlayer) hlsPlayer.destroy();
+        if(dashPlayer) dashPlayer.destroy();
+        document.getElementById('video-url').value = '';
+        document.getElementById('notes-url').value = '';
+        document.getElementById('dpp-url').value = '';
+        document.getElementById('thumbnail-url').value = '';
+        document.getElementById('notes-status').style.display = 'none';
+        document.getElementById('dpp-status').style.display = 'none';
+        document.getElementById('view-notes-btn').style.display = 'none';
+        document.getElementById('view-dpp-btn').style.display = 'none';
+        updateThumbnailPreview('');
+        document.getElementById('video-player').innerHTML = `<div class="player-placeholder" id="player-placeholder"><img src="" class="thumbnail-preview" id="thumbnail-preview"><div class="thumbnail-overlay"><i class="fas fa-play-circle play-button-large"></i><div class="play-text">Click to Play Video</div></div></div>`;
+        document.getElementById('player-placeholder').addEventListener('click', () => { const u = document.getElementById('video-url').value; if(u) playVideo(u); else showToast("No URL", "error"); });
+        showToast("Reset complete", "success");
+    }
+    
+    // Password / Edit mode (restore persist)
+    function unlockEditing() {
+        const inputs = ['video-url','notes-url','dpp-url','thumbnail-url'];
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            el.classList.remove('blurred');
+            el.readOnly = false;
+        });
+        document.querySelectorAll('.lock-overlay').forEach(overlay => overlay.style.display = 'none');
+        document.getElementById('edit-lock-btn').innerHTML = '<i class="fas fa-unlock"></i>';
+        localStorage.setItem('editMode', 'true');
+        showToast("Edit mode ON", "success");
+    }
+    function lockEditing() {
+        const inputs = ['video-url','notes-url','dpp-url','thumbnail-url'];
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            el.classList.add('blurred');
+            el.readOnly = true;
+        });
+        document.querySelectorAll('.lock-overlay').forEach(overlay => overlay.style.display = 'flex');
+        document.getElementById('edit-lock-btn').innerHTML = '<i class="fas fa-lock"></i>';
+        localStorage.removeItem('editMode');
+    }
+    function validatePassword() {
+        const pwd = document.getElementById('password-input').value;
+        const stored = localStorage.getItem('editPassword') || 'murlikumar65@';
+        if(pwd === stored) {
+            unlockEditing();
+            document.getElementById('password-modal').style.display = 'none';
+        } else showToast("Wrong password", "error");
+    }
+    
+    // Save/Load session with thumbnail
+    function saveSession() {
+        const session = {
+            video: document.getElementById('video-url').value,
+            notes: document.getElementById('notes-url').value,
+            dpp: document.getElementById('dpp-url').value,
+            thumbnail: document.getElementById('thumbnail-url').value
+        };
+        localStorage.setItem('learnixSession', JSON.stringify(session));
+        showToast("Session saved", "success");
+    }
+    function loadSession() {
+        const raw = localStorage.getItem('learnixSession');
+        if(!raw) return showToast("No saved session", "error");
+        const s = JSON.parse(raw);
+        if(s.video) document.getElementById('video-url').value = s.video;
+        if(s.notes) { document.getElementById('notes-url').value = s.notes; handleNotesAdded(s.notes); }
+        if(s.dpp) { document.getElementById('dpp-url').value = s.dpp; handleDPPAdded(s.dpp); }
+        if(s.thumbnail) { document.getElementById('thumbnail-url').value = s.thumbnail; updateThumbnailPreview(s.thumbnail); }
+        showToast("Session loaded", "success");
+    }
+    function exportLinks() {
+        const video = document.getElementById('video-url').value || "—";
+        const notes = document.getElementById('notes-url').value || "—";
+        const dpp = document.getElementById('dpp-url').value || "—";
+        const thumb = document.getElementById('thumbnail-url').value || "—";
+        const exportText = `📺 LEARNIX SESSION\nVideo: ${video}\nNotes: ${notes}\nDPP: ${dpp}\nThumbnail: ${thumb}`;
+        document.getElementById('export-data').value = exportText;
+        document.getElementById('export-modal').style.display = 'flex';
+    }
+    function downloadAllPDFs() {
+        const notesUrl = document.getElementById('notes-url').value;
+        const dppUrl = document.getElementById('dpp-url').value;
+        if(notesUrl && notesUrl.includes('.pdf')) window.open(notesUrl, '_blank');
+        if(dppUrl && dppUrl.includes('.pdf')) setTimeout(() => window.open(dppUrl, '_blank'), 300);
+        showToast("Opening PDFs", "info");
+    }
+    
+    // Event binding & theme
+    document.addEventListener('DOMContentLoaded', () => {
+        AOS.init({ duration: 600 });
+        // Theme
+        const savedTheme = localStorage.getItem('theme');
+        if(savedTheme === 'light') document.documentElement.classList.add('light-theme');
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('light-theme');
+            localStorage.setItem('theme', document.documentElement.classList.contains('light-theme') ? 'light' : 'dark');
+        });
+        // Password setup default
+        if(!localStorage.getItem('editPassword')) localStorage.setItem('editPassword', 'murlikumar65@');
+        if(localStorage.getItem('editMode') === 'true') unlockEditing();
+        else lockEditing();
+        
+        // Buttons
+        document.getElementById('play-btn').addEventListener('click', () => playVideo(document.getElementById('video-url').value));
+        document.getElementById('reset-btn').addEventListener('click', resetAll);
+        document.getElementById('edit-lock-btn').addEventListener('click', () => { if(document.getElementById('edit-lock-btn').innerHTML.includes('lock')) document.getElementById('password-modal').style.display = 'flex'; else lockEditing(); });
+        document.getElementById('submit-password').addEventListener('click', validatePassword);
+        document.getElementById('cancel-password').addEventListener('click', () => document.getElementById('password-modal').style.display = 'none');
+        document.getElementById('save-session-btn').addEventListener('click', saveSession);
+        document.getElementById('export-links-btn').addEventListener('click', exportLinks);
+        document.getElementById('download-all-pdf-btn').addEventListener('click', downloadAllPDFs);
+        document.getElementById('close-export-modal').addEventListener('click', () => document.getElementById('export-modal').style.display = 'none');
+        document.getElementById('copy-share-url').addEventListener('click', () => { const inp = document.getElementById('share-url'); inp.select(); navigator.clipboard.writeText(inp.value); showToast("Copied!"); });
+        document.getElementById('share-btn').addEventListener('click', () => { updateShareUrl(); document.getElementById('share-modal').style.display = 'flex'; });
+        document.getElementById('copy-link').addEventListener('click', () => { const link = updateShareUrl(); navigator.clipboard.writeText(link); showToast("Link copied"); });
+        document.getElementById('whatsapp-share').addEventListener('click', () => { const url = updateShareUrl(); window.open(`https://wa.me/?text=${encodeURIComponent(url)}`); });
+        document.getElementById('telegram-share').addEventListener('click', () => { const url = updateShareUrl(); window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}`); });
+        document.getElementById('telegram-join').addEventListener('click', (e) => { e.preventDefault(); showToast("Join @learnix_support (demo)", "info"); });
+        
+        // Add notes/dpp manual (owner)
+        document.getElementById('add-notes-btn')?.addEventListener('click', () => { const url = document.getElementById('notes-url').value; if(url) handleNotesAdded(url); });
+        document.getElementById('add-dpp-btn')?.addEventListener('click', () => { const url = document.getElementById('dpp-url').value; if(url) handleDPPAdded(url); });
+        
+        // Thumbnail input live preview
+        document.getElementById('thumbnail-url').addEventListener('input', (e) => updateThumbnailPreview(e.target.value));
+        // Load from URL params
+        const params = new URLSearchParams(window.location.search);
+        if(params.get('play')) document.getElementById('video-url').value = atob(params.get('play'));
+        if(params.get('notes')) { const n = atob(params.get('notes')); document.getElementById('notes-url').value = n; handleNotesAdded(n); }
+        if(params.get('dpp')) { const d = atob(params.get('dpp')); document.getElementById('dpp-url').value = d; handleDPPAdded(d); }
+        if(params.get('thumb')) { const t = atob(params.get('thumb')); document.getElementById('thumbnail-url').value = t; updateThumbnailPreview(t); }
+        
+        const lastThumb = localStorage.getItem('thumbUrl');
+        if(lastThumb) updateThumbnailPreview(lastThumb);
+        
+        // Global placeholder click
+        document.getElementById('player-placeholder')?.addEventListener('click', () => { const u = document.getElementById('video-url').value; if(u) playVideo(u); else showToast("Enter video URL first", "error"); });
     });
 </script>
 </body>
