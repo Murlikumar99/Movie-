@@ -3,803 +3,816 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LEARNIX PLAYER · Dynamic DASH Token Injection</title>
-    <meta property="og:image" content="https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png" id="og-image">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4386953840556147" crossorigin="anonymous"></script>
-    <link rel="icon" href="https://i.supaimg.com/5aa6f3e6-1291-4b63-879e-7870fcdac1d6.png" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <title>PW STREAM · Auto Token Injection Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- dash.js & hls.js -->
+    <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         :root {
-            --primary: #00E0A1;
-            --primary-dark: #00B884;
-            --primary-glow: 0 0 10px rgba(0,224,161,0.5);
-            --bg-dark: #0A1128;
-            --bg-darker: #050A1D;
-            --bg-card: #131C3F;
-            --text-light: #FFFFFF;
-            --text-muted: #A0AEC0;
-            --border-light: rgba(0,224,161,0.3);
-            --shadow: 0 10px 25px rgba(0,0,0,0.3);
-            --radius: 16px;
+            --bg-primary: #0a0c10;
+            --bg-card: #11161e;
+            --bg-elevated: #1a1f2a;
+            --primary: #00e5ff;
+            --primary-glow: 0 0 12px rgba(0,229,255,0.5);
+            --text-primary: #ffffff;
+            --text-secondary: #a0aab5;
+            --border: #2a313c;
+            --success: #00e5ff;
+            --error: #ff4d4d;
         }
-        :root.light-theme {
-            --primary: #00B884;
-            --bg-dark: #F5F7FA;
-            --bg-darker: #E4E7EB;
-            --bg-card: #FFFFFF;
-            --text-light: #1A202C;
-            --text-muted: #718096;
-        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
-            color: var(--text-light);
-            transition: all 0.3s ease;
+            background: radial-gradient(circle at 20% 30%, #0e1219, #05070a);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
         }
+
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
         }
-        header {
+
+        /* header */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 25px 0;
             flex-wrap: wrap;
-            gap: 15px;
-            border-bottom: 1px solid rgba(0,224,161,0.2);
+            gap: 16px;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
         }
-        .logo-container {
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00e5ff, #00c3ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .actions {
             display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .logo {
-            height: 55px;
-        }
-        .logo-text {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--primary);
-            text-shadow: var(--primary-glow);
+            gap: 12px;
         }
         .btn {
-            padding: 12px 20px;
-            border-radius: var(--radius);
+            padding: 10px 20px;
+            border-radius: 40px;
             font-weight: 600;
+            border: none;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            cursor: pointer;
+            background: var(--bg-card);
+            color: white;
             transition: 0.2s;
-            border: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
         }
         .btn-primary {
             background: var(--primary);
-            color: #050A1D;
+            color: #0a0c10;
+            border: none;
             box-shadow: var(--primary-glow);
         }
-        .btn-secondary {
-            background: transparent;
-            border: 1px solid var(--border-light);
-            color: var(--text-light);
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
         }
-        .btn-icon {
-            width: 45px;
-            height: 45px;
-            padding: 0;
-            border-radius: 50%;
-            justify-content: center;
+        .btn-secondary:hover {
+            background: #1f2a36;
+            border-color: var(--primary);
         }
-        .hero {
-            text-align: center;
-            margin: 30px 0 50px;
-        }
-        .player-container {
-            max-width: 800px;
-            margin: 0 auto 25px;
-            aspect-ratio: 16/9;
-            background: #000;
-            border-radius: var(--radius);
+
+        /* player card */
+        .player-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            border: 1px solid var(--border);
             overflow: hidden;
-            border: 1px solid var(--border-light);
-            box-shadow: var(--shadow);
+            padding: 20px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+            margin-bottom: 24px;
         }
-        #video-player {
-            width: 100%;
-            height: 100%;
-        }
-        .player-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(145deg, var(--bg-card), #000);
-            cursor: pointer;
+        .video-wrapper {
             position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+            aspect-ratio: 16 / 9;
         }
-        .thumbnail-preview {
+        video {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            display: none;
+            outline: none;
         }
-        .thumbnail-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
+        /* custom slim controls (optional) we rely on native + custom speed/quality */
+        .controls-overlay {
+            background: rgba(0,0,0,0.7);
+            padding: 12px 16px;
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            gap: 12px;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--border);
         }
-        .play-button-large {
-            font-size: 5rem;
+        .ctrl-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .ctrl-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px;
+            transition: 0.2s;
+        }
+        .ctrl-btn:hover {
             color: var(--primary);
-            filter: drop-shadow(0 0 12px rgba(0,224,161,0.8));
         }
-        .input-group {
-            max-width: 750px;
-            margin: 20px auto 0;
-        }
-        .badge {
-            background: var(--primary);
-            color: #050A1D;
-            padding: 6px 14px;
+        select, .speed-select {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 6px 10px;
             border-radius: 30px;
             font-size: 0.8rem;
-            font-weight: 700;
-            display: inline-block;
-            margin-bottom: 12px;
+            cursor: pointer;
         }
-        .video-input-container, .thumbnail-input-container {
-            position: relative;
-            margin-bottom: 16px;
-        }
-        .url-input {
-            width: 100%;
-            padding: 15px 20px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius);
-            color: var(--text-light);
-            font-size: 0.95rem;
-        }
-        .url-input.blurred {
-            filter: blur(5px);
-            pointer-events: none;
-        }
-        .lock-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(19,28,63,0.85);
-            border-radius: var(--radius);
+        .progress-container {
+            flex: 1;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 8px;
+        }
+        input[type="range"] {
+            flex: 1;
+            height: 4px;
+            -webkit-appearance: none;
+            background: #2a313c;
+            border-radius: 5px;
+        }
+        input[type="range"]:focus {
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary);
             cursor: pointer;
-            backdrop-filter: blur(2px);
         }
-        .lock-overlay i {
-            font-size: 1.8rem;
-            color: var(--primary);
-            animation: pulse 1.8s infinite;
+        .time {
+            font-size: 0.8rem;
+            font-family: monospace;
         }
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .play-btn { flex: 2; }
-        .resources-section { margin: 50px auto; max-width: 800px; }
-        .resources-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
-            gap: 25px;
+
+        /* url input */
+        .url-section {
             margin-top: 20px;
         }
-        .resource-card {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 22px;
-            border-top: 3px solid var(--primary);
-        }
-        .resource-header {
+        .url-input-group {
             display: flex;
-            align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: var(--bg-elevated);
+            padding: 8px 16px;
+            border-radius: 60px;
+            border: 1px solid var(--border);
         }
-        .resource-icon { font-size: 1.8rem; color: var(--primary); }
-        .resource-input-group { position: relative; margin-bottom: 12px; display: flex; gap: 8px; }
-        .resource-input {
+        .url-input-group input {
             flex: 1;
-            padding: 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius);
-            color: var(--text-light);
-        }
-        .resource-input.blurred { filter: blur(4px); }
-        .horizontal-buttons {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            margin-top: 25px;
-            padding-bottom: 8px;
-        }
-        .horizontal-btn { white-space: nowrap; padding: 10px 18px; }
-        .pdf-download-btn {
-            background: linear-gradient(135deg, #FF6B6B, #FF4757);
+            background: transparent;
+            border: none;
             color: white;
+            font-family: monospace;
+            font-size: 0.85rem;
+            padding: 12px 0;
+            outline: none;
         }
-        .share-components {
-            position: fixed;
-            bottom: 28px;
-            right: 28px;
-            display: flex;
-            gap: 12px;
-            z-index: 100;
+        .blurred {
+            filter: blur(5px);
+            background: #1a1f2a80;
+            cursor: not-allowed;
         }
-        .share-btn {
-            width: 48px;
-            height: 48px;
-            background: var(--bg-card);
-            border-radius: 50%;
+        .lock-overlay {
+            position: relative;
+        }
+
+        /* debug console */
+        .debug-console {
+            background: #0a0e14;
+            border-radius: 20px;
+            padding: 16px;
+            margin-top: 24px;
+            border: 1px solid var(--border);
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+        }
+        .debug-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: var(--shadow);
+            margin-bottom: 12px;
             color: var(--primary);
         }
-        .telegram-cta {
-            position: fixed;
-            bottom: 28px;
-            left: 28px;
-            z-index: 100;
+        .log-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #030507;
+            padding: 12px;
+            border-radius: 16px;
         }
-        .telegram-btn {
-            background: var(--bg-card);
-            padding: 10px 22px;
-            border-radius: 40px;
-            text-decoration: none;
-            color: var(--primary);
-            display: flex;
-            gap: 8px;
-            font-weight: 600;
+        .log-entry {
+            font-family: monospace;
+            font-size: 11px;
+            padding: 4px 0;
+            border-bottom: 0.5px solid #1f2a36;
+            color: #b0c4de;
         }
+        .log-success { color: #00e5ff; }
+        .log-error { color: #ff7777; }
+        .badge {
+            background: var(--primary);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* modal */
         .modal {
             display: none;
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-            z-index: 2000;
+            backdrop-filter: blur(8px);
             align-items: center;
             justify-content: center;
+            z-index: 1000;
         }
-        .modal-content {
+        .modal-card {
             background: var(--bg-card);
-            border-radius: var(--radius);
+            border-radius: 32px;
             padding: 32px;
-            max-width: 460px;
+            max-width: 400px;
             width: 90%;
+            border: 1px solid var(--primary);
             text-align: center;
+        }
+        .modal-card input {
+            background: #1a1f2a;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 40px;
+            width: 100%;
+            color: white;
+            margin: 16px 0;
         }
         .toast {
             position: fixed;
-            bottom: 100px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--bg-card);
-            padding: 12px 24px;
+            background: #11161e;
+            backdrop-filter: blur(12px);
+            padding: 10px 24px;
             border-radius: 40px;
-            display: none;
             z-index: 1100;
-            font-weight: 500;
+            display: none;
+            border-left: 4px solid var(--primary);
         }
-        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
-        @media (max-width: 640px) {
-            .share-components { bottom: 15px; right: 15px; gap: 8px; }
-            .telegram-cta { bottom: 15px; left: 15px; }
+        @media (max-width: 700px) {
+            .controls-overlay { flex-direction: column; align-items: stretch; }
+            .progress-container { width: 100%; }
         }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <header>
-        <div class="logo-container">
-            <img src="https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png" class="logo" alt="logo">
-            <span class="logo-text">LEARNIX PLAYER</span>
+    <div class="header">
+        <div class="logo">
+            <h1><i class="fas fa-shield-alt"></i> PW STREAM</h1>
+            <p>auto token injection · DASH/HLS · zero 403</p>
         </div>
-        <div class="header-actions">
-            <button class="btn btn-icon btn-secondary" id="editLockBtn"><i class="fas fa-lock"></i></button>
-            <button class="btn btn-icon btn-secondary" id="shareMainBtn"><i class="fas fa-share-alt"></i></button>
-            <button class="btn btn-icon btn-secondary" id="themeToggle"><i class="fas fa-sun"></i></button>
+        <div class="actions">
+            <button class="btn btn-secondary" id="lockBtn"><i class="fas fa-lock"></i> Locked</button>
+            <button class="btn btn-secondary" id="resetBtn"><i class="fas fa-trash-alt"></i> Reset</button>
+            <button class="btn btn-secondary" id="shareBtn"><i class="fas fa-share-alt"></i> Share</button>
         </div>
-    </header>
+    </div>
 
-    <section class="hero">
-        <h1 data-aos="fade-up">🔐 Dynamic Token Injection for DASH</h1>
-        <p data-aos="fade-up">Automatically extracts <code>URLPrefix, Expires, KeyName, Signature</code> from MPD URL and adds to <strong>every</strong> segment request (init, chunks, audio, video).</p>
+    <div class="player-card">
+        <div class="video-wrapper">
+            <video id="videoPlayer" poster="https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png" controlsList="nodownload" playsinline></video>
+        </div>
+        <div class="controls-overlay">
+            <div class="ctrl-group">
+                <button class="ctrl-btn" id="playPauseBtn"><i class="fas fa-play"></i></button>
+                <button class="ctrl-btn" id="volumeBtn"><i class="fas fa-volume-up"></i></button>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1" style="width: 80px;">
+            </div>
+            <div class="progress-container">
+                <span class="time" id="currentTime">0:00</span>
+                <input type="range" id="seekBar" value="0" step="0.001">
+                <span class="time" id="duration">0:00</span>
+            </div>
+            <div class="ctrl-group">
+                <select id="speedSelect" class="speed-select">
+                    <option value="0.5">0.5x</option>
+                    <option value="0.75">0.75x</option>
+                    <option value="1" selected>1x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
+                </select>
+                <select id="qualitySelect" class="speed-select" disabled>
+                    <option>Auto</option>
+                </select>
+                <button class="ctrl-btn" id="fullscreenBtn"><i class="fas fa-expand"></i></button>
+            </div>
+        </div>
 
-        <div class="player-container" data-aos="fade-up">
-            <div id="video-player">
-                <div class="player-placeholder" id="playerPlaceholder">
-                    <img src="" class="thumbnail-preview" id="thumbPreviewImg">
-                    <div class="thumbnail-overlay">
-                        <i class="fas fa-play-circle play-button-large"></i>
-                        <div class="play-text">Click to play lecture</div>
-                    </div>
+        <div class="url-section">
+            <div class="url-input-group" id="urlGroup">
+                <i class="fas fa-link" style="color: var(--primary);"></i>
+                <input type="text" id="streamUrl" placeholder="Paste .mpd or .m3u8 with token params (URLPrefix, Expires, KeyName, Signature)" value="" readonly class="blurred">
+                <div id="urlLockOverlay" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%);">
+                    <i class="fas fa-lock" style="color: var(--primary);"></i>
                 </div>
             </div>
-            <div class="spinner" id="spinner" style="display:none; margin-top: 8px;"><i class="fas fa-circle-notch fa-spin fa-2x"></i></div>
+            <div style="display: flex; gap: 12px; margin-top: 16px;">
+                <button class="btn btn-primary" id="loadBtn"><i class="fas fa-play"></i> Load & Play</button>
+                <button class="btn btn-secondary" id="clearLogsBtn"><i class="fas fa-broom"></i> Clear logs</button>
+            </div>
         </div>
+    </div>
 
-        <div class="input-group">
-            <span class="badge"><i class="fas fa-link"></i> DASH MPD with auth (auto token propagation)</span>
-            <div class="video-input-container">
-                <input type="text" class="url-input blurred" id="videoUrl" placeholder="Paste master.mpd URL with ?URLPrefix=...&amp;Expires=...&amp;Signature=..." readonly>
-                <div class="lock-overlay" id="videoLock"><i class="fas fa-lock"></i></div>
-            </div>
-            <div class="thumbnail-input-container">
-                <input type="text" class="url-input blurred" id="thumbUrl" placeholder="Thumbnail image URL (optional)" readonly>
-                <div class="lock-overlay" id="thumbLock"><i class="fas fa-lock"></i></div>
-            </div>
-            <div class="action-buttons">
-                <button class="btn btn-primary play-btn" id="playBtn"><i class="fas fa-play"></i> Play DASH Stream</button>
-                <button class="btn btn-secondary" id="resetBtn"><i class="fas fa-undo-alt"></i> Reset</button>
-            </div>
-            <div style="font-size:0.75rem; margin-top: 12px; text-align:left; background: rgba(0,224,161,0.05); padding: 10px; border-radius: 12px;">
-                <i class="fas fa-magic"></i> <strong>Dynamic token engine:</strong> Any change in MPD URL → new parameters extracted → applied to <strong>all</strong> segment requests (init.mp4, .m4s chunks, etc.)
-            </div>
+    <!-- debug console -->
+    <div class="debug-console">
+        <div class="debug-header">
+            <span><i class="fas fa-terminal"></i> 🔐 TOKEN INJECTION MONITOR</span>
+            <span id="tokenBadge" class="badge">⚡ waiting</span>
         </div>
-    </section>
-
-    <section class="resources-section" data-aos="fade-up">
-        <h3>📖 Study Material</h3>
-        <div class="resources-grid">
-            <div class="resource-card">
-                <div class="resource-header"><i class="fas fa-file-alt resource-icon"></i><h4>Notes</h4></div>
-                <div class="resource-input-group">
-                    <input type="text" class="resource-input blurred" id="notesUrl" placeholder="PDF / Docs URL" readonly>
-                    <div class="lock-overlay" id="notesLock"><i class="fas fa-lock"></i></div>
-                </div>
-                <div id="notesStatus" style="display:none;" class="resource-status">✅ Notes attached</div>
-                <button id="viewNotesBtn" class="btn btn-secondary" style="display:none;"><i class="fas fa-eye"></i> View notes</button>
-            </div>
-            <div class="resource-card">
-                <div class="resource-header"><i class="fas fa-tasks resource-icon"></i><h4>DPP</h4></div>
-                <div class="resource-input-group">
-                    <input type="text" class="resource-input blurred" id="dppUrl" placeholder="DPP PDF link" readonly>
-                    <div class="lock-overlay" id="dppLock"><i class="fas fa-lock"></i></div>
-                </div>
-                <div id="dppStatus" style="display:none;" class="resource-status">📄 DPP ready</div>
-                <button id="viewDppBtn" class="btn btn-secondary" style="display:none;"><i class="fas fa-external-link-alt"></i> View DPP</button>
-            </div>
+        <div class="log-list" id="logList">
+            <div class="log-entry">🟢 ready — paste protected URL</div>
+            <div class="log-entry">🔧 Token will be appended to every .mpd/.m3u8/.m4s/.ts/init.mp4 request</div>
         </div>
-        <div class="horizontal-buttons">
-            <button class="btn btn-secondary horizontal-btn" id="saveSessionBtn"><i class="fas fa-save"></i> Save session</button>
-            <button class="btn btn-secondary horizontal-btn" id="exportLinksBtn"><i class="fas fa-share-alt"></i> Export links</button>
-            <button class="btn pdf-download-btn horizontal-btn" id="downloadAllPdfBtn"><i class="fas fa-file-pdf"></i> Download PDFs</button>
-        </div>
-    </section>
-    <footer style="text-align:center; margin-top: 60px; padding: 25px 0; border-top:1px solid rgba(0,224,161,0.2);">
-        <p>© 2025 LEARNIX PLAYER · Token injection active for every DASH segment (init, media, chunks)</p>
-    </footer>
+    </div>
 </div>
 
-<div class="share-components">
-    <div class="share-btn" id="whatsappShare"><i class="fab fa-whatsapp"></i></div>
-    <div class="share-btn" id="telegramShare"><i class="fab fa-telegram"></i></div>
-    <div class="share-btn" id="copyLinkBtn"><i class="fas fa-link"></i></div>
+<!-- password modal -->
+<div id="passwordModal" class="modal">
+    <div class="modal-card">
+        <i class="fas fa-shield-alt" style="font-size: 48px; color: var(--primary);"></i>
+        <h3>Admin Unlock</h3>
+        <p>Enter password to edit URL</p>
+        <input type="password" id="adminPass" placeholder="Password">
+        <div style="display: flex; gap: 12px;">
+            <button class="btn btn-primary" id="submitPassBtn">Unlock</button>
+            <button class="btn btn-secondary" id="closePassBtn">Cancel</button>
+        </div>
+        <p style="font-size: 12px; margin-top: 15px;">default: murlikumar65@</p>
+    </div>
 </div>
-<div class="telegram-cta"><a href="#" class="telegram-btn" id="telegramJoinBtn"><i class="fab fa-telegram"></i> Join channel</a></div>
 
-<!-- Modals -->
-<div class="modal" id="passwordModal"><div class="modal-content"><i class="fas fa-lock" style="font-size:3rem; color:var(--primary);"></i><h3 style="margin:10px 0">Unlock editor</h3><input type="password" id="passwordInput" placeholder="Password" style="width:100%; padding:12px; margin:15px 0;"><button id="submitPassBtn" class="btn btn-primary">Unlock</button><button id="cancelPassBtn" class="btn btn-secondary">Cancel</button><p style="margin-top:12px;">Default: murlikumar65@</p></div></div>
-<div class="modal" id="shareModal"><div class="modal-content"><h3>Share session</h3><input type="text" id="shareUrlField" readonly style="width:100%; margin:15px 0; padding:10px;"><button id="copyShareFieldBtn" class="btn btn-primary">Copy link</button><button id="closeShareModal" class="btn btn-secondary" style="margin-top:12px;">Close</button></div></div>
-<div class="modal" id="exportModal"><div class="modal-content"><h3>Export session data</h3><textarea id="exportTextArea" rows="5" readonly style="width:100%; margin:15px 0;"></textarea><button id="closeExportBtn" class="btn btn-secondary">Close</button></div></div>
-<div class="toast" id="toastMsg"></div>
+<!-- share modal (simple) -->
+<div id="shareModal" class="modal">
+    <div class="modal-card">
+        <h3>Share Session</h3>
+        <input type="text" id="shareLink" readonly style="width:100%; margin:16px 0; background:#1a1f2a; border:none; padding:12px; border-radius:40px; color:white;">
+        <button class="btn btn-primary" id="copyShareBtn">Copy Link</button>
+        <button class="btn btn-secondary" id="closeShareModalBtn" style="margin-top:12px;">Close</button>
+    </div>
+</div>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+<div id="toast" class="toast"></div>
+
 <script>
-    AOS.init({ duration: 700, once: true });
+    // ---------- DOM elements ----------
+    const video = document.getElementById('videoPlayer');
+    const streamUrlInput = document.getElementById('streamUrl');
+    const loadBtn = document.getElementById('loadBtn');
+    const lockBtn = document.getElementById('lockBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const volumeBtn = document.getElementById('volumeBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const seekBar = document.getElementById('seekBar');
+    const currentTimeSpan = document.getElementById('currentTime');
+    const durationSpan = document.getElementById('duration');
+    const speedSelect = document.getElementById('speedSelect');
+    const qualitySelect = document.getElementById('qualitySelect');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const logList = document.getElementById('logList');
+    const tokenBadge = document.getElementById('tokenBadge');
+    const clearLogsBtn = document.getElementById('clearLogsBtn');
 
-    // ---------- GLOBALS ----------
+    // player instances
     let dashPlayer = null;
     let hlsPlayer = null;
-    let activeAuthParams = {};        // holds { URLPrefix, Expires, KeyName, Signature }
-    let currentMpdUrl = "";
+    let currentType = null; // 'dash', 'hls', 'mp4'
+    let tokenQueryStr = '';  // extracted from main URL
+    let isEditMode = false;
+    const CORRECT_PASS = "murlikumar65@";
 
-    // ---------- CORE: extract auth parameters from ANY MPD URL ----------
-    function extractAuthParamsFromUrl(url) {
-        try {
-            const urlObj = new URL(url);
-            const allowedKeys = ['URLPrefix', 'Expires', 'KeyName', 'Signature'];
-            const params = {};
-            allowedKeys.forEach(key => {
-                if (urlObj.searchParams.has(key)) {
-                    params[key] = urlObj.searchParams.get(key);
-                }
-            });
-            console.log("[AUTH] Extracted params:", params);
-            return params;
-        } catch(e) {
-            console.warn("[AUTH] URL parse error", e);
-            return {};
-        }
+    // helper: add log
+    function addLog(message, isError = false) {
+        const div = document.createElement('div');
+        div.className = `log-entry ${isError ? 'log-error' : 'log-success'}`;
+        div.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+        logList.appendChild(div);
+        div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    // Append current auth parameters to any URL (used in interceptor)
-    function appendAuthToUrl(originalUrl, authParams) {
-        if (!authParams || Object.keys(authParams).length === 0) return originalUrl;
-        try {
-            const urlObj = new URL(originalUrl, window.location.href);
-            let modified = false;
-            // Add each missing param
-            for (const [key, value] of Object.entries(authParams)) {
-                if (!urlObj.searchParams.has(key)) {
-                    urlObj.searchParams.set(key, value);
-                    modified = true;
-                }
-            }
-            return modified ? urlObj.toString() : originalUrl;
-        } catch(e) {
-            // if URL is relative or malformed, try simple string append (fallback)
-            if (originalUrl.includes('?')) return originalUrl + '&' + new URLSearchParams(authParams).toString();
-            else return originalUrl + '?' + new URLSearchParams(authParams).toString();
-        }
-    }
-
-    // ---------- DASH PLAYER WITH REQUEST INTERCEPTOR (dynamic token injection) ----------
-    async function initDashWithTokenInjection(mpdUrl, videoElement) {
-        return new Promise((resolve, reject) => {
-            // Destroy existing dash player
-            if (dashPlayer) {
-                dashPlayer.destroy();
-                dashPlayer = null;
-            }
-            // 1) Extract fresh auth params from the current MPD url
-            const authParams = extractAuthParamsFromUrl(mpdUrl);
-            activeAuthParams = authParams;
-            currentMpdUrl = mpdUrl;
-
-            if (Object.keys(authParams).length === 0) {
-                console.warn("[DASH] No auth parameters found in URL. Segment requests may fail.");
-                showToast("⚠️ No URLPrefix/Signature found. Token injection disabled.", "error");
-            } else {
-                console.log("[DASH] Token injection active. Params:", authParams);
-                showToast(`🔑 Token loaded: URLPrefix, Expires, Signature active`, "info");
-            }
-
-            // 2) Create dash player
-            dashPlayer = dashjs.MediaPlayer().create();
-            dashPlayer.initialize(videoElement, mpdUrl, true);
-
-            // 3) REQUEST MODIFIER: inject auth params into EVERY request (init.mp4, segments, manifests)
-            if (Object.keys(authParams).length > 0) {
-                dashPlayer.setRequestModifier((request) => {
-                    if (request && request.url) {
-                        const originalUrl = request.url;
-                        const modifiedUrl = appendAuthToUrl(originalUrl, authParams);
-                        if (modifiedUrl !== originalUrl) {
-                            request.url = modifiedUrl;
-                            // Optional: also add custom headers required by the CDN (Referer, User-Agent)
-                            if (!request.headers) request.headers = [];
-                            // Ensure we mimic browser headers exactly as your curl example
-                            const hasReferer = request.headers.some(h => h.name === 'Referer');
-                            if (!hasReferer) {
-                                request.headers.push({ name: "Referer", value: "https://movie-dusky-three.vercel.app/" });
-                            }
-                            const hasUA = request.headers.some(h => h.name === 'User-Agent');
-                            if (!hasUA) {
-                                request.headers.push({ name: "User-Agent", value: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Mobile Safari/537.36" });
-                            }
-                        }
-                    }
-                    return request;
-                });
-            } else {
-                // Still add referer for compatibility
-                dashPlayer.setRequestModifier((req) => {
-                    if (req && !req.headers) req.headers = [];
-                    if (!req.headers.some(h => h.name === 'Referer')) {
-                        req.headers.push({ name: "Referer", value: "https://movie-dusky-three.vercel.app/" });
-                    }
-                    return req;
-                });
-            }
-
-            // 4) Event listeners
-            dashPlayer.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, () => {
-                console.log("[DASH] Stream initialized, token interceptor active for all segments.");
-                resolve();
-            });
-            dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (e) => {
-                console.error("[DASH] Error:", e);
-                reject(e);
-            });
-        });
-    }
-
-    // ----- YouTube fallback (optional) -----
-    function getYoutubeId(url) {
-        const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\/]+)/);
-        return match ? match[1] : null;
-    }
-
-    // ----- Main play entry point -----
-    async function playVideo(url) {
-        if (!url || url.trim() === "") {
-            showToast("Please paste your MPD (DASH) URL", "error");
-            return;
-        }
-        showLoading(true);
-        document.getElementById('playerPlaceholder').style.display = 'none';
-
-        // YouTube detection
-        const ytId = getYoutubeId(url);
-        if (ytId) {
-            const container = document.getElementById('video-player');
-            container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/${ytId}?modestbranding=1&rel=0&controls=1" frameborder="0" allowfullscreen></iframe>`;
-            showLoading(false);
-            return;
-        }
-
-        // Destroy any previous HLS or DASH
-        if (dashPlayer) { dashPlayer.destroy(); dashPlayer = null; }
-        if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
-
-        const container = document.getElementById('video-player');
-        container.innerHTML = `<video id="dash-video" controls style="width:100%; height:100%;"></video>`;
-        const videoElem = document.getElementById('dash-video');
-
-        try {
-            if (url.includes('.mpd') || url.includes('master.mpd') || url.includes('manifest')) {
-                await initDashWithTokenInjection(url, videoElem);
-                showLoading(false);
-                videoElem.play().catch(e => showToast("Click play to start", "info"));
-            } 
-            else if (url.includes('.m3u8') && Hls.isSupported()) {
-                hlsPlayer = new Hls();
-                hlsPlayer.loadSource(url);
-                hlsPlayer.attachMedia(videoElem);
-                hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => { showLoading(false); videoElem.play(); });
-                hlsPlayer.on(Hls.Events.ERROR, () => { showLoading(false); showToast("HLS error", "error"); });
-            }
-            else {
-                videoElem.src = url;
-                videoElem.addEventListener('canplay', () => { showLoading(false); videoElem.play(); });
-                videoElem.addEventListener('error', () => { showLoading(false); showToast("Cannot load media", "error"); });
-            }
-        } catch(err) {
-            console.error(err);
-            showLoading(false);
-            showToast("Playback failed: " + (err.message || "invalid stream"), "error");
-        }
-    }
-
-    // ----- UI helpers (unchanged but important) -----
-    function showToast(msg, type="") {
-        const toast = document.getElementById('toastMsg');
+    function showToast(msg, error = false) {
+        const toast = document.getElementById('toast');
         toast.textContent = msg;
-        toast.style.display = "block";
-        setTimeout(() => toast.style.display = "none", 3500);
+        toast.style.display = 'block';
+        toast.style.background = error ? '#b91c1cd9' : '#11161ed9';
+        toast.style.borderLeftColor = error ? '#ff4d4d' : '#00e5ff';
+        setTimeout(() => { toast.style.display = 'none'; }, 3000);
     }
-    function showLoading(show) {
-        document.getElementById('spinner').style.display = show ? "block" : "none";
-    }
-    function updateThumbnail(url) {
-        const thumbImg = document.getElementById('thumbPreviewImg');
-        if (url && (url.match(/\.(jpg|jpeg|png|webp|gif)/i))) {
-            thumbImg.src = url;
-            thumbImg.style.display = 'block';
-            localStorage.setItem('customThumb', url);
-            document.getElementById('og-image').setAttribute('content', url);
-        } else {
-            thumbImg.style.display = 'none';
-            localStorage.removeItem('customThumb');
+
+    // ---------- extract token query from master URL ----------
+    function extractTokenFromUrl(url) {
+        try {
+            const u = new URL(url);
+            const params = u.searchParams;
+            const URLPrefix = params.get('URLPrefix');
+            const Expires = params.get('Expires');
+            const KeyName = params.get('KeyName');
+            const Signature = params.get('Signature');
+            if (URLPrefix && Expires && KeyName && Signature) {
+                const token = `URLPrefix=${encodeURIComponent(URLPrefix)}&Expires=${encodeURIComponent(Expires)}&KeyName=${encodeURIComponent(KeyName)}&Signature=${encodeURIComponent(Signature)}`;
+                addLog(`✅ TOKEN extracted: ${token.substring(0, 80)}...`);
+                tokenBadge.innerText = '🔐 Token active';
+                return token;
+            } else {
+                addLog(`⚠️ Missing token parameters, some requests may 403`, true);
+                tokenBadge.innerText = '⚠️ No token';
+                return '';
+            }
+        } catch(e) {
+            addLog(`❌ Invalid URL: ${e.message}`, true);
+            return '';
         }
     }
-    function buildShareUrl() {
-        const video = document.getElementById('videoUrl').value;
-        const notes = document.getElementById('notesUrl').value;
-        const dpp = document.getElementById('dppUrl').value;
-        const thumb = document.getElementById('thumbUrl').value;
-        const params = new URLSearchParams();
-        if (video) params.set('play', btoa(video));
-        if (notes) params.set('notes', btoa(notes));
-        if (dpp) params.set('dpp', btoa(dpp));
-        if (thumb) params.set('thumb', btoa(thumb));
-        return window.location.origin + window.location.pathname + (params.toString() ? '?'+params.toString() : '');
+
+    // inject token into any URL (preserve existing query)
+    function injectTokenToUrl(requestUrl) {
+        if (!tokenQueryStr) return requestUrl;
+        if (!requestUrl) return requestUrl;
+        // avoid double injection
+        if (requestUrl.includes('URLPrefix=') && requestUrl.includes('Signature=')) return requestUrl;
+        try {
+            const separator = requestUrl.includes('?') ? '&' : '?';
+            return requestUrl + separator + tokenQueryStr;
+        } catch(e) {
+            return requestUrl;
+        }
     }
-    function refreshShareField() {
-        const shareInput = document.getElementById('shareUrlField');
-        if (shareInput) shareInput.value = buildShareUrl();
-    }
-    function resetAll() {
-        if (dashPlayer) { dashPlayer.destroy(); dashPlayer = null; }
+
+    // ---------- DASH.JS with RequestModifier ----------
+    function initDash(url) {
+        if (dashPlayer) {
+            dashPlayer.reset();
+            dashPlayer = null;
+        }
         if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
-        document.getElementById('videoUrl').value = '';
-        document.getElementById('notesUrl').value = '';
-        document.getElementById('dppUrl').value = '';
-        document.getElementById('thumbUrl').value = '';
-        document.getElementById('notesStatus').style.display = 'none';
-        document.getElementById('dppStatus').style.display = 'none';
-        document.getElementById('viewNotesBtn').style.display = 'none';
-        document.getElementById('viewDppBtn').style.display = 'none';
-        updateThumbnail('');
-        document.getElementById('video-player').innerHTML = `
-            <div class="player-placeholder" id="playerPlaceholder">
-                <img src="" class="thumbnail-preview" id="thumbPreviewImg">
-                <div class="thumbnail-overlay">
-                    <i class="fas fa-play-circle play-button-large"></i>
-                    <div class="play-text">Click to Play Video</div>
-                </div>
-            </div>`;
-        document.getElementById('playerPlaceholder').addEventListener('click', () => {
-            const u = document.getElementById('videoUrl').value;
-            if (u) playVideo(u); else showToast("Enter video URL first", "error");
-        });
-        showToast("All data cleared", "success");
-    }
-    
-    // ----- Password lock/unlock for editing URLs -----
-    function unlockEditing() {
-        const inputs = ['videoUrl','notesUrl','dppUrl','thumbUrl'];
-        inputs.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) { el.classList.remove('blurred'); el.readOnly = false; }
-        });
-        document.querySelectorAll('.lock-overlay').forEach(ov => ov.style.display = 'none');
-        document.getElementById('editLockBtn').innerHTML = '<i class="fas fa-unlock"></i>';
-        localStorage.setItem('editMode', 'true');
-        showToast("✏️ Edit mode ON - you can change MPD URL", "success");
-    }
-    function lockEditing() {
-        const inputs = ['videoUrl','notesUrl','dppUrl','thumbUrl'];
-        inputs.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) { el.classList.add('blurred'); el.readOnly = true; }
-        });
-        document.querySelectorAll('.lock-overlay').forEach(ov => ov.style.display = 'flex');
-        document.getElementById('editLockBtn').innerHTML = '<i class="fas fa-lock"></i>';
-        localStorage.removeItem('editMode');
-        showToast("🔒 Edit mode locked", "info");
-    }
-    function validatePassword() {
-        const pwd = document.getElementById('passwordInput').value;
-        const stored = localStorage.getItem('editPassword') || 'murlikumar65@';
-        if (pwd === stored) {
-            unlockEditing();
-            document.getElementById('passwordModal').style.display = 'none';
-        } else showToast("Wrong password", "error");
-    }
-    
-    // Resource handlers
-    function attachNotes() {
-        const url = document.getElementById('notesUrl').value;
-        if (!url) return;
-        document.getElementById('notesStatus').style.display = 'flex';
-        document.getElementById('viewNotesBtn').style.display = 'inline-flex';
-        document.getElementById('viewNotesBtn').onclick = () => window.open(url, '_blank');
-        refreshShareField();
-    }
-    function attachDpp() {
-        const url = document.getElementById('dppUrl').value;
-        if (!url) return;
-        document.getElementById('dppStatus').style.display = 'flex';
-        document.getElementById('viewDppBtn').style.display = 'inline-flex';
-        document.getElementById('viewDppBtn').onclick = () => window.open(url, '_blank');
-        refreshShareField();
-    }
-    function saveSession() {
-        const session = {
-            video: document.getElementById('videoUrl').value,
-            notes: document.getElementById('notesUrl').value,
-            dpp: document.getElementById('dppUrl').value,
-            thumb: document.getElementById('thumbUrl').value
-        };
-        localStorage.setItem('learnixSessionData', JSON.stringify(session));
-        showToast("Session saved (including token URL)", "success");
-    }
-    function loadSessionFromStorage() {
-        const raw = localStorage.getItem('learnixSessionData');
-        if (!raw) { showToast("No saved session", "error"); return; }
-        const s = JSON.parse(raw);
-        if (s.video) document.getElementById('videoUrl').value = s.video;
-        if (s.notes) { document.getElementById('notesUrl').value = s.notes; attachNotes(); }
-        if (s.dpp) { document.getElementById('dppUrl').value = s.dpp; attachDpp(); }
-        if (s.thumb) { document.getElementById('thumbUrl').value = s.thumb; updateThumbnail(s.thumb); }
-        showToast("Session loaded", "success");
-    }
-    function exportLinks() {
-        const video = document.getElementById('videoUrl').value || "—";
-        const notes = document.getElementById('notesUrl').value || "—";
-        const dpp = document.getElementById('dppUrl').value || "—";
-        const thumb = document.getElementById('thumbUrl').value || "—";
-        const exportStr = `🎓 LEARNIX SESSION\nVideo MPD: ${video}\nNotes: ${notes}\nDPP: ${dpp}\nThumbnail: ${thumb}`;
-        document.getElementById('exportTextArea').value = exportStr;
-        document.getElementById('exportModal').style.display = 'flex';
-    }
-    function downloadAllPdfs() {
-        const notesUrl = document.getElementById('notesUrl').value;
-        const dppUrl = document.getElementById('dppUrl').value;
-        if (notesUrl && (notesUrl.includes('.pdf') || notesUrl.includes('drive'))) window.open(notesUrl, '_blank');
-        if (dppUrl && (dppUrl.includes('.pdf') || dppUrl.includes('drive'))) setTimeout(() => window.open(dppUrl, '_blank'), 400);
-        showToast("Opening PDF resources", "info");
+        currentType = 'dash';
+        const context = dashjs.Context.getInstance();
+        dashPlayer = dashjs.MediaPlayer().create();
+        dashPlayer.initialize(video, url, true);
+        // ---- token interceptor ----
+        dashPlayer.extend('RequestModifier', function() {
+            return {
+                modifyRequestURL: function(originalUrl) {
+                    let modified = injectTokenToUrl(originalUrl);
+                    if (modified !== originalUrl) {
+                        addLog(`🔁 DASH segment modified: ${originalUrl.split('/').pop()} → token attached`);
+                    }
+                    return modified;
+                }
+            };
+        }, true);
+        dashPlayer.on('error', (e) => addLog(`DASH error: ${e}`, true));
+        dashPlayer.on('streamInitialized', () => addLog('✅ DASH stream ready, token injection active'));
+        // quality selector from dash
+        updateDashQualityOptions();
+        dashPlayer.play().catch(e => addLog(`Play error: ${e}`, true));
     }
 
-    // ----- DOM READY & EVENT BINDINGS -----
-    document.addEventListener('DOMContentLoaded', () => {
-        // theme
-        if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light-theme');
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            document.documentElement.classList.toggle('light-theme');
-            localStorage.setItem('theme', document.documentElement.classList.contains('light-theme') ? 'light' : 'dark');
-        });
-        if (!localStorage.getItem('editPassword')) localStorage.setItem('editPassword', 'murlikumar65@');
-        if (localStorage.getItem('editMode') === 'true') unlockEditing();
-        else lockEditing();
+    function updateDashQualityOptions() {
+        if (!dashPlayer) return;
+        setTimeout(() => {
+            const bitrates = dashPlayer.getBitrateInfoListFor('video');
+            if (bitrates && bitrates.length) {
+                qualitySelect.disabled = false;
+                qualitySelect.innerHTML = '<option value="auto">Auto</option>';
+                bitrates.forEach((level, idx) => {
+                    const option = document.createElement('option');
+                    option.value = level.qualityIndex;
+                    option.text = `${level.height}p (${Math.round(level.bitrate/1000)}kbps)`;
+                    qualitySelect.appendChild(option);
+                });
+                qualitySelect.onchange = () => {
+                    if (qualitySelect.value === 'auto') dashPlayer.setQualityFor('video', -1);
+                    else dashPlayer.setQualityFor('video', parseInt(qualitySelect.value), false);
+                };
+            } else {
+                qualitySelect.disabled = true;
+                qualitySelect.innerHTML = '<option>Qualities</option>';
+            }
+        }, 1000);
+    }
 
-        document.getElementById('playBtn').addEventListener('click', () => playVideo(document.getElementById('videoUrl').value));
-        document.getElementById('resetBtn').addEventListener('click', resetAll);
-        document.getElementById('editLockBtn').addEventListener('click', () => {
-            if (document.getElementById('editLockBtn').innerHTML.includes('lock')) document.getElementById('passwordModal').style.display = 'flex';
-            else lockEditing();
-        });
-        document.getElementById('submitPassBtn').addEventListener('click', validatePassword);
-        document.getElementById('cancelPassBtn').addEventListener('click', () => document.getElementById('passwordModal').style.display = 'none');
-        document.getElementById('saveSessionBtn').addEventListener('click', saveSession);
-        document.getElementById('exportLinksBtn').addEventListener('click', exportLinks);
-        document.getElementById('downloadAllPdfBtn').addEventListener('click', downloadAllPdfs);
-        document.getElementById('closeExportBtn').addEventListener('click', () => document.getElementById('exportModal').style.display = 'none');
-        document.getElementById('shareMainBtn').addEventListener('click', () => { refreshShareField(); document.getElementById('shareModal').style.display = 'flex'; });
-        document.getElementById('closeShareModal').addEventListener('click', () => document.getElementById('shareModal').style.display = 'none');
-        document.getElementById('copyShareFieldBtn').addEventListener('click', () => {
-            const inp = document.getElementById('shareUrlField');
-            inp.select(); navigator.clipboard.writeText(inp.value); showToast("Link copied");
-        });
-        document.getElementById('copyLinkBtn').addEventListener('click', () => {
-            const link = buildShareUrl();
-            navigator.clipboard.writeText(link); showToast("Share link copied");
-        });
-        document.getElementById('whatsappShare').addEventListener('click', () => window.open(`https://wa.me/?text=${encodeURIComponent(buildShareUrl())}`));
-        document.getElementById('telegramShare').addEventListener('click', () => window.open(`https://t.me/share/url?url=${encodeURIComponent(buildShareUrl())}`));
-        document.getElementById('telegramJoinBtn').addEventListener('click', (e) => { e.preventDefault(); showToast("Join @learnix_official (demo)", "info"); });
+    // ---------- HLS.JS with xhrSetup ----------
+    function initHls(url) {
+        if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
+        if (dashPlayer) { dashPlayer.reset(); dashPlayer = null; }
+        currentType = 'hls';
+        if (Hls.isSupported()) {
+            hlsPlayer = new Hls({
+                xhrSetup: (xhr, xhrUrl) => {
+                    let modifiedUrl = injectTokenToUrl(xhrUrl);
+                    if (modifiedUrl !== xhrUrl) {
+                        addLog(`🔁 HLS xhr interceptor: ${xhrUrl.split('/').pop()} → token added`);
+                    }
+                    xhr.open('GET', modifiedUrl, true);
+                },
+                manifestLoadingMaxRetry: 2,
+                levelLoadingMaxRetry: 2
+            });
+            hlsPlayer.loadSource(url);
+            hlsPlayer.attachMedia(video);
+            hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => {
+                addLog(`✅ HLS manifest parsed, token injection active`);
+                updateHlsQualityOptions();
+                video.play().catch(e => addLog(`autoplay blocked: ${e}`, true));
+            });
+            hlsPlayer.on(Hls.Events.ERROR, (_, data) => {
+                if (data.fatal) addLog(`❌ HLS fatal error: ${data.type}`, true);
+            });
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = injectTokenToUrl(url);
+            addLog(`📱 Native HLS (safari) with token injection (URL modified)`);
+        } else {
+            addLog(`❌ HLS not supported`, true);
+        }
+    }
 
-        document.getElementById('notesUrl').addEventListener('change', attachNotes);
-        document.getElementById('dppUrl').addEventListener('change', attachDpp);
-        document.getElementById('thumbUrl').addEventListener('input', (e) => updateThumbnail(e.target.value));
+    function updateHlsQualityOptions() {
+        if (!hlsPlayer) return;
+        setTimeout(() => {
+            const levels = hlsPlayer.levels;
+            if (levels && levels.length) {
+                qualitySelect.disabled = false;
+                qualitySelect.innerHTML = '<option value="-1">Auto</option>';
+                levels.forEach((level, idx) => {
+                    const option = document.createElement('option');
+                    option.value = idx;
+                    option.text = `${level.height}p`;
+                    qualitySelect.appendChild(option);
+                });
+                qualitySelect.onchange = () => {
+                    const idx = parseInt(qualitySelect.value);
+                    if (idx === -1) hlsPlayer.currentLevel = -1;
+                    else hlsPlayer.currentLevel = idx;
+                };
+            } else {
+                qualitySelect.disabled = true;
+                qualitySelect.innerHTML = '<option>Qualities</option>';
+            }
+        }, 800);
+    }
 
-        // Load from URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('play')) document.getElementById('videoUrl').value = atob(urlParams.get('play'));
-        if (urlParams.get('notes')) { document.getElementById('notesUrl').value = atob(urlParams.get('notes')); attachNotes(); }
-        if (urlParams.get('dpp')) { document.getElementById('dppUrl').value = atob(urlParams.get('dpp')); attachDpp(); }
-        if (urlParams.get('thumb')) { document.getElementById('thumbUrl').value = atob(urlParams.get('thumb')); updateThumbnail(atob(urlParams.get('thumb'))); }
+    // ---------- destroy everything ----------
+    function destroyPlayer() {
+        if (dashPlayer) { dashPlayer.reset(); dashPlayer = null; }
+        if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
+        video.pause();
+        video.src = '';
+        video.load();
+        currentType = null;
+        addLog('🛑 Player destroyed');
+    }
 
-        const savedThumb = localStorage.getItem('customThumb');
-        if (savedThumb) updateThumbnail(savedThumb);
+    // main load with token extraction
+    function loadStream() {
+        let mainUrl = streamUrlInput.value.trim();
+        if (!mainUrl) { showToast("Enter stream URL", true); return; }
+        destroyPlayer();
+        tokenQueryStr = extractTokenFromUrl(mainUrl);
+        if (!tokenQueryStr) {
+            addLog(`⚠️ No token parameters in URL, segment requests may fail`, true);
+        } else {
+            addLog(`✨ Token injection armed, every segment will receive query`);
+        }
+        // detect DASH or HLS
+        if (mainUrl.includes('.mpd')) {
+            initDash(mainUrl);
+            addLog(`🎬 DASH mode: ${mainUrl.split('/').pop()}`);
+        } else if (mainUrl.includes('.m3u8') || mainUrl.includes('m3u8')) {
+            initHls(mainUrl);
+            addLog(`🎬 HLS mode: ${mainUrl.split('/').pop()}`);
+        } else if (mainUrl.includes('.mp4') || mainUrl.includes('.webm')) {
+            currentType = 'mp4';
+            video.src = injectTokenToUrl(mainUrl);
+            video.play().catch(e => addLog(`MP4 error: ${e}`));
+            addLog(`📀 MP4 direct with token injection (if any)`);
+        } else {
+            showToast("Unsupported format, use .mpd / .m3u8", true);
+        }
+    }
 
-        document.getElementById('playerPlaceholder')?.addEventListener('click', () => {
-            const url = document.getElementById('videoUrl').value;
-            if (url) playVideo(url); else showToast("Paste a valid MPD URL first", "error");
-        });
+    // UI events
+    loadBtn.addEventListener('click', loadStream);
+    resetBtn.addEventListener('click', () => {
+        destroyPlayer();
+        if (isEditMode) streamUrlInput.value = '';
+        else showToast("Unlock to reset URL", true);
     });
+
+    // Edit mode lock
+    function updateEditUI() {
+        if (isEditMode) {
+            streamUrlInput.classList.remove('blurred');
+            streamUrlInput.readOnly = false;
+            lockBtn.innerHTML = '<i class="fas fa-unlock-alt"></i> Unlocked';
+            lockBtn.style.background = '#00e5ff20';
+            document.getElementById('urlLockOverlay')?.remove();
+        } else {
+            streamUrlInput.classList.add('blurred');
+            streamUrlInput.readOnly = true;
+            lockBtn.innerHTML = '<i class="fas fa-lock"></i> Locked';
+            lockBtn.style.background = '';
+            if (!document.getElementById('urlLockOverlay')) {
+                const overlay = document.createElement('div');
+                overlay.id = 'urlLockOverlay';
+                overlay.style.cssText = 'position:absolute; right:20px; top:50%; transform:translateY(-50%);';
+                overlay.innerHTML = '<i class="fas fa-lock" style="color:var(--primary);"></i>';
+                document.querySelector('.url-input-group').style.position = 'relative';
+                document.querySelector('.url-input-group').appendChild(overlay);
+            }
+        }
+    }
+
+    lockBtn.addEventListener('click', () => {
+        if (isEditMode) {
+            isEditMode = false;
+            localStorage.setItem('pw_edit_mode', 'false');
+            updateEditUI();
+            showToast("Editing locked");
+        } else {
+            document.getElementById('passwordModal').style.display = 'flex';
+        }
+    });
+    document.getElementById('submitPassBtn').addEventListener('click', () => {
+        const pass = document.getElementById('adminPass').value;
+        if (pass === CORRECT_PASS) {
+            isEditMode = true;
+            localStorage.setItem('pw_edit_mode', 'true');
+            document.getElementById('passwordModal').style.display = 'none';
+            updateEditUI();
+            showToast("Edit mode unlocked, you can modify URL");
+        } else {
+            showToast("Wrong password", true);
+        }
+        document.getElementById('adminPass').value = '';
+    });
+    document.getElementById('closePassBtn').addEventListener('click', () => {
+        document.getElementById('passwordModal').style.display = 'none';
+    });
+
+    // share modal
+    shareBtn.addEventListener('click', () => {
+        const shareUrl = window.location.href.split('?')[0] + '?url=' + btoa(streamUrlInput.value);
+        document.getElementById('shareLink').value = shareUrl;
+        document.getElementById('shareModal').style.display = 'flex';
+    });
+    document.getElementById('copyShareBtn').addEventListener('click', () => {
+        const input = document.getElementById('shareLink');
+        input.select();
+        navigator.clipboard.writeText(input.value);
+        showToast("Share link copied");
+    });
+    document.getElementById('closeShareModalBtn').addEventListener('click', () => {
+        document.getElementById('shareModal').style.display = 'none';
+    });
+
+    // clear logs
+    clearLogsBtn.addEventListener('click', () => {
+        logList.innerHTML = '<div class="log-entry">🧹 logs cleared</div>';
+    });
+
+    // load from URL param
+    function loadFromParams() {
+        const params = new URLSearchParams(window.location.search);
+        const encoded = params.get('url');
+        if (encoded) {
+            try {
+                const url = atob(encoded);
+                streamUrlInput.value = url;
+                isEditMode = true;
+                updateEditUI();
+                setTimeout(() => loadStream(), 300);
+            } catch(e) {}
+        }
+    }
+
+    // video controls binding
+    video.addEventListener('loadedmetadata', () => {
+        durationSpan.innerText = formatTime(video.duration);
+        seekBar.max = video.duration;
+    });
+    video.addEventListener('timeupdate', () => {
+        currentTimeSpan.innerText = formatTime(video.currentTime);
+        if (!isNaN(video.duration)) seekBar.value = video.currentTime;
+    });
+    seekBar.addEventListener('input', () => video.currentTime = seekBar.value);
+    playPauseBtn.addEventListener('click', () => {
+        if (video.paused) video.play().catch(e => addLog(`play error: ${e}`));
+        else video.pause();
+    });
+    video.addEventListener('play', () => playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>');
+    video.addEventListener('pause', () => playPauseBtn.innerHTML = '<i class="fas fa-play"></i>');
+    volumeSlider.addEventListener('input', () => {
+        video.volume = volumeSlider.value;
+        volumeBtn.innerHTML = video.volume === 0 ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+    });
+    volumeBtn.addEventListener('click', () => {
+        video.muted = !video.muted;
+        volumeBtn.innerHTML = video.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+    });
+    speedSelect.addEventListener('change', () => video.playbackRate = parseFloat(speedSelect.value));
+    fullscreenBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) video.requestFullscreen().catch(e=>addLog(e));
+        else document.exitFullscreen();
+    });
+
+    function formatTime(sec) {
+        if (isNaN(sec)) return "0:00";
+        const mins = Math.floor(sec / 60);
+        const seconds = Math.floor(sec % 60);
+        return `${mins}:${seconds.toString().padStart(2,'0')}`;
+    }
+
+    // global network interceptor (extra safety for any fetch/XHR)
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+        let url = args[0];
+        if (typeof url === 'string' && (url.includes('.m4s') || url.includes('init.mp4') || url.includes('.ts') || url.includes('audio') || url.includes('video'))) {
+            let modUrl = injectTokenToUrl(url);
+            if (modUrl !== url) addLog(`🌐 fetch interceptor: ${url.split('/').pop()} token added`);
+            return originalFetch.call(this, modUrl, args[1]);
+        }
+        return originalFetch.apply(this, args);
+    };
+
+    // xhr interceptor backup
+    const XHR = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+        let newUrl = url;
+        if (typeof url === 'string' && (url.includes('.m4s') || url.includes('init.mp4') || url.includes('.ts') || url.includes('segment'))) {
+            newUrl = injectTokenToUrl(url);
+            if (newUrl !== url) addLog(`🌐 XHR interceptor: ${url.split('/').pop()} token added`);
+        }
+        return XHR.call(this, method, newUrl, async, user, pass);
+    };
+
+    // initial state
+    (function init() {
+        const stored = localStorage.getItem('pw_edit_mode') === 'true';
+        isEditMode = stored;
+        updateEditUI();
+        loadFromParams();
+        addLog(`🚀 PW Token Injector ready — every .m4s/.ts/init.mp4 will receive URLPrefix,Expires,KeyName,Signature`);
+    })();
 </script>
 </body>
 </html>
