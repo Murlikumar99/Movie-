@@ -3,472 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LEARNIX PLAYER - Secure DASH & HLS Platform</title>
+    <title>LEARNIX PLAYER · Dynamic DASH Token Injection</title>
     <meta property="og:image" content="https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png" id="og-image">
-
-    <!-- AdSense Code -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4386953840556147"
-     crossorigin="anonymous"></script>
-
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4386953840556147" crossorigin="anonymous"></script>
     <link rel="icon" href="https://i.supaimg.com/5aa6f3e6-1291-4b63-879e-7870fcdac1d6.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
-        :root {
-            --primary: #00E0A1;
-            --primary-dark: #00B884;
-            --primary-glow: 0 0 10px rgba(0, 224, 161, 0.7), 0 0 20px rgba(0, 224, 161, 0.4);
-            --secondary: #6C63FF;
-            --secondary-glow: 0 0 10px rgba(108, 99, 255, 0.5);
-            --bg-dark: #0A1128;
-            --bg-darker: #050A1D;
-            --bg-card: #131C3F;
-            --text-light: #FFFFFF;
-            --text-muted: #A0AEC0;
-            --border-light: rgba(0, 224, 161, 0.3);
-            --border-dark: rgba(0, 224, 161, 0.1);
-            --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            --radius: 16px;
-        }
-
-        :root.light-theme {
-            --primary: #00B884;
-            --primary-dark: #00956A;
-            --primary-glow: 0 0 10px rgba(0, 184, 132, 0.5);
-            --secondary: #5A52D3;
-            --bg-dark: #F5F7FA;
-            --bg-darker: #E4E7EB;
-            --bg-card: #FFFFFF;
-            --text-light: #1A202C;
-            --text-muted: #718096;
-            --border-light: rgba(0, 184, 132, 0.3);
-            --border-dark: rgba(0, 184, 132, 0.1);
-            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        :root {
+            --primary: #00E0A1;
+            --primary-dark: #00B884;
+            --primary-glow: 0 0 10px rgba(0,224,161,0.5);
+            --bg-dark: #0A1128;
+            --bg-darker: #050A1D;
+            --bg-card: #131C3F;
+            --text-light: #FFFFFF;
+            --text-muted: #A0AEC0;
+            --border-light: rgba(0,224,161,0.3);
+            --shadow: 0 10px 25px rgba(0,0,0,0.3);
+            --radius: 16px;
+        }
+        :root.light-theme {
+            --primary: #00B884;
+            --bg-dark: #F5F7FA;
+            --bg-darker: #E4E7EB;
+            --bg-card: #FFFFFF;
+            --text-light: #1A202C;
+            --text-muted: #718096;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
             color: var(--text-light);
-            line-height: 1.6;
             transition: all 0.3s ease;
-            overflow-x: hidden;
         }
-
         .container {
-            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 25px 0;
-            margin-bottom: 40px;
-            border-bottom: 1px solid var(--border-dark);
             flex-wrap: wrap;
             gap: 15px;
+            border-bottom: 1px solid rgba(0,224,161,0.2);
         }
-
         .logo-container {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-
         .logo {
             height: 55px;
-            filter: drop-shadow(0 0 5px var(--primary));
         }
-
         .logo-text {
             font-size: 28px;
             font-weight: 800;
             color: var(--primary);
             text-shadow: var(--primary-glow);
         }
-
-        .header-actions {
-            display: flex;
-            gap: 15px;
-        }
-
         .btn {
             padding: 12px 20px;
             border-radius: var(--radius);
-            border: none;
-            cursor: pointer;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
         }
-
+        .btn-primary {
+            background: var(--primary);
+            color: #050A1D;
+            box-shadow: var(--primary-glow);
+        }
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-light);
+        }
         .btn-icon {
             width: 45px;
             height: 45px;
             padding: 0;
             border-radius: 50%;
+            justify-content: center;
         }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: var(--bg-darker);
-            box-shadow: var(--primary-glow);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            color: var(--text-light);
-            border: 1px solid var(--border-light);
-        }
-
-        .btn-secondary:hover {
-            background-color: rgba(0, 224, 161, 0.1);
-            transform: translateY(-2px);
-        }
-
         .hero {
             text-align: center;
-            margin-bottom: 60px;
+            margin: 30px 0 50px;
         }
-
-        .hero h1 {
-            font-size: clamp(2rem, 5vw, 2.8rem);
-            margin-bottom: 20px;
-            font-weight: 800;
-        }
-
         .player-container {
-            width: 100%;
             max-width: 800px;
-            margin: 0 auto 30px;
+            margin: 0 auto 25px;
+            aspect-ratio: 16/9;
+            background: #000;
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: var(--shadow);
-            background-color: #000;
-            aspect-ratio: 16/9;
-            position: relative;
             border: 1px solid var(--border-light);
+            box-shadow: var(--shadow);
         }
-
         #video-player {
             width: 100%;
             height: 100%;
-            background-color: #000;
         }
-
         .player-placeholder {
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-dark) 100%);
+            background: linear-gradient(145deg, var(--bg-card), #000);
             cursor: pointer;
             position: relative;
         }
-
         .thumbnail-preview {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: none;
         }
-
         .thumbnail-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            inset: 0;
+            background: rgba(0,0,0,0.6);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
         }
-
         .play-button-large {
             font-size: 5rem;
-            margin-bottom: 15px;
             color: var(--primary);
-            text-shadow: 0 0 20px rgba(0, 224, 161, 0.8);
-            transition: transform 0.3s ease;
+            filter: drop-shadow(0 0 12px rgba(0,224,161,0.8));
         }
-
-        .thumbnail-overlay:hover .play-button-large {
-            transform: scale(1.1);
-        }
-
         .input-group {
-            width: 100%;
-            max-width: 700px;
-            margin: 0 auto;
-            position: relative;
+            max-width: 750px;
+            margin: 20px auto 0;
         }
-
         .badge {
-            background-color: var(--primary);
-            color: var(--bg-darker);
-            padding: 5px 12px;
-            border-radius: 20px;
+            background: var(--primary);
+            color: #050A1D;
+            padding: 6px 14px;
+            border-radius: 30px;
             font-size: 0.8rem;
             font-weight: 700;
             display: inline-block;
             margin-bottom: 12px;
         }
-
         .video-input-container, .thumbnail-input-container {
             position: relative;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
-
         .url-input {
             width: 100%;
-            padding: 16px 20px;
-            border-radius: var(--radius);
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--border-light);
-            font-size: 1rem;
-            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
             color: var(--text-light);
-            transition: all 0.2s;
+            font-size: 0.95rem;
         }
-
-        .url-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 224, 161, 0.2);
-        }
-
         .url-input.blurred {
             filter: blur(5px);
-            background-color: rgba(255, 255, 255, 0.02);
-            cursor: not-allowed;
+            pointer-events: none;
         }
-
         .lock-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(19, 28, 63, 0.85);
+            inset: 0;
+            background: rgba(19,28,63,0.85);
+            border-radius: var(--radius);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: var(--radius);
             cursor: pointer;
             backdrop-filter: blur(2px);
         }
-
         .lock-overlay i {
             font-size: 1.8rem;
             color: var(--primary);
-            animation: pulse 2s infinite;
+            animation: pulse 1.8s infinite;
         }
-
         .action-buttons {
             display: flex;
             gap: 15px;
             margin: 20px 0;
         }
-
-        .play-btn {
-            flex: 2;
-        }
-
-        .reset-btn {
-            flex: 1;
-        }
-
-        .resources-section {
-            margin: 40px 0;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
+        .play-btn { flex: 2; }
+        .resources-section { margin: 50px auto; max-width: 800px; }
         .resources-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
             gap: 25px;
             margin-top: 20px;
         }
-
         .resource-card {
             background: var(--bg-card);
             border-radius: var(--radius);
-            padding: 25px;
+            padding: 22px;
             border-top: 3px solid var(--primary);
         }
-
         .resource-header {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 20px;
         }
-
-        .resource-icon {
-            font-size: 1.8rem;
-            color: var(--primary);
-        }
-
-        .resource-input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
+        .resource-icon { font-size: 1.8rem; color: var(--primary); }
+        .resource-input-group { position: relative; margin-bottom: 12px; display: flex; gap: 8px; }
         .resource-input {
             flex: 1;
-            padding: 12px 15px;
-            border-radius: var(--radius);
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--border-light);
-            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
             color: var(--text-light);
         }
-
-        .resource-input.blurred {
-            filter: blur(5px);
-        }
-
-        .resource-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: rgba(0, 224, 161, 0.1);
-            border-radius: var(--radius);
-            font-size: 0.9rem;
-        }
-
+        .resource-input.blurred { filter: blur(4px); }
         .horizontal-buttons {
             display: flex;
             gap: 12px;
             overflow-x: auto;
-            padding: 12px 0;
-            margin-top: 20px;
+            margin-top: 25px;
+            padding-bottom: 8px;
         }
-
-        .horizontal-btn {
-            white-space: nowrap;
-            padding: 10px 18px;
-        }
-
+        .horizontal-btn { white-space: nowrap; padding: 10px 18px; }
         .pdf-download-btn {
-            background: linear-gradient(135deg, #FF6B6B 0%, #FF4757 100%);
+            background: linear-gradient(135deg, #FF6B6B, #FF4757);
             color: white;
         }
-
-        .feature-card {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 30px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
         .share-components {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 28px;
+            right: 28px;
             display: flex;
             gap: 12px;
             z-index: 100;
         }
-
         .share-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            width: 48px;
+            height: 48px;
             background: var(--bg-card);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             box-shadow: var(--shadow);
             color: var(--primary);
-            transition: 0.2s;
         }
-
-        .share-btn:hover {
-            transform: scale(1.1);
-        }
-
         .telegram-cta {
             position: fixed;
-            bottom: 30px;
-            left: 30px;
+            bottom: 28px;
+            left: 28px;
             z-index: 100;
         }
-
         .telegram-btn {
-            padding: 12px 24px;
             background: var(--bg-card);
+            padding: 10px 22px;
             border-radius: 40px;
             text-decoration: none;
             color: var(--primary);
-            font-weight: 600;
             display: flex;
             gap: 8px;
-            align-items: center;
+            font-weight: 600;
         }
-
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            inset: 0;
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(5px);
             z-index: 2000;
             align-items: center;
             justify-content: center;
         }
-
         .modal-content {
             background: var(--bg-card);
-            padding: 35px;
             border-radius: var(--radius);
-            max-width: 500px;
+            padding: 32px;
+            max-width: 460px;
             width: 90%;
             text-align: center;
         }
-
         .toast {
             position: fixed;
             bottom: 100px;
@@ -481,16 +308,10 @@
             z-index: 1100;
             font-weight: 500;
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        @media (max-width: 768px) {
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+        @media (max-width: 640px) {
             .share-components { bottom: 15px; right: 15px; gap: 8px; }
             .telegram-cta { bottom: 15px; left: 15px; }
-            .btn { padding: 8px 16px; }
         }
     </style>
 </head>
@@ -498,203 +319,257 @@
 <div class="container">
     <header>
         <div class="logo-container">
-            <img src="https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png" alt="LEARNIX" class="logo">
-            <div class="logo-text">LEARNIX PLAYER</div>
+            <img src="https://i.postimg.cc/T2psP7QG/73f6e3b1-211e-4b7e-9eac-9881f90bc471.png" class="logo" alt="logo">
+            <span class="logo-text">LEARNIX PLAYER</span>
         </div>
         <div class="header-actions">
-            <button class="btn btn-icon btn-secondary" id="edit-lock-btn"><i class="fas fa-lock"></i></button>
-            <button class="btn btn-icon btn-secondary" id="share-btn"><i class="fas fa-share-alt"></i></button>
-            <button class="btn btn-icon btn-secondary" id="theme-toggle"><i class="fas fa-sun"></i></button>
+            <button class="btn btn-icon btn-secondary" id="editLockBtn"><i class="fas fa-lock"></i></button>
+            <button class="btn btn-icon btn-secondary" id="shareMainBtn"><i class="fas fa-share-alt"></i></button>
+            <button class="btn btn-icon btn-secondary" id="themeToggle"><i class="fas fa-sun"></i></button>
         </div>
     </header>
 
     <section class="hero">
-        <h1 data-aos="fade-up">Premium DASH & HLS Streaming</h1>
-        <p data-aos="fade-up">Supports signed MPD URLs · Auth parameters auto-appended to segments · Secure playback</p>
+        <h1 data-aos="fade-up">🔐 Dynamic Token Injection for DASH</h1>
+        <p data-aos="fade-up">Automatically extracts <code>URLPrefix, Expires, KeyName, Signature</code> from MPD URL and adds to <strong>every</strong> segment request (init, chunks, audio, video).</p>
 
         <div class="player-container" data-aos="fade-up">
             <div id="video-player">
-                <div class="player-placeholder" id="player-placeholder">
-                    <img src="" alt="Thumbnail" class="thumbnail-preview" id="thumbnail-preview">
+                <div class="player-placeholder" id="playerPlaceholder">
+                    <img src="" class="thumbnail-preview" id="thumbPreviewImg">
                     <div class="thumbnail-overlay">
                         <i class="fas fa-play-circle play-button-large"></i>
-                        <div class="play-text">Click to Play</div>
+                        <div class="play-text">Click to play lecture</div>
                     </div>
                 </div>
             </div>
-            <div class="spinner" id="loading-spinner" style="display:none; text-align:center; margin-top:10px;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
+            <div class="spinner" id="spinner" style="display:none; margin-top: 8px;"><i class="fas fa-circle-notch fa-spin fa-2x"></i></div>
         </div>
 
         <div class="input-group">
-            <span class="badge">🔐 DASH + HLS + YouTube + Signed MPD</span>
+            <span class="badge"><i class="fas fa-link"></i> DASH MPD with auth (auto token propagation)</span>
             <div class="video-input-container">
-                <input type="text" class="url-input blurred" id="video-url" placeholder="Enter lecture URL (MPD/m3u8/YouTube)" readonly>
-                <div class="lock-overlay" id="video-lock-overlay"><i class="fas fa-lock"></i></div>
+                <input type="text" class="url-input blurred" id="videoUrl" placeholder="Paste master.mpd URL with ?URLPrefix=...&amp;Expires=...&amp;Signature=..." readonly>
+                <div class="lock-overlay" id="videoLock"><i class="fas fa-lock"></i></div>
             </div>
             <div class="thumbnail-input-container">
-                <input type="text" class="url-input blurred" id="thumbnail-url" placeholder="Thumbnail image URL (optional)" readonly>
-                <div class="lock-overlay" id="thumbnail-lock-overlay"><i class="fas fa-lock"></i></div>
+                <input type="text" class="url-input blurred" id="thumbUrl" placeholder="Thumbnail image URL (optional)" readonly>
+                <div class="lock-overlay" id="thumbLock"><i class="fas fa-lock"></i></div>
             </div>
             <div class="action-buttons">
-                <button class="btn btn-primary play-btn" id="play-btn"><i class="fas fa-play"></i> Play Now</button>
-                <button class="btn btn-secondary reset-btn" id="reset-btn"><i class="fas fa-redo"></i> Reset</button>
+                <button class="btn btn-primary play-btn" id="playBtn"><i class="fas fa-play"></i> Play DASH Stream</button>
+                <button class="btn btn-secondary" id="resetBtn"><i class="fas fa-undo-alt"></i> Reset</button>
             </div>
-            <div class="url-examples" style="font-size:0.8rem; margin-top:10px;">
-                <details><summary>🔗 Example: DASH with signature (auto auth propagation)</summary>
-                    <code style="word-break:break-word;">https://cdn.../master.mpd?URLPrefix=...&amp;Expires=...&amp;Signature=...</code>
-                </details>
+            <div style="font-size:0.75rem; margin-top: 12px; text-align:left; background: rgba(0,224,161,0.05); padding: 10px; border-radius: 12px;">
+                <i class="fas fa-magic"></i> <strong>Dynamic token engine:</strong> Any change in MPD URL → new parameters extracted → applied to <strong>all</strong> segment requests (init.mp4, .m4s chunks, etc.)
             </div>
         </div>
     </section>
 
     <section class="resources-section" data-aos="fade-up">
-        <h3>📚 Study Resources</h3>
+        <h3>📖 Study Material</h3>
         <div class="resources-grid">
             <div class="resource-card">
                 <div class="resource-header"><i class="fas fa-file-alt resource-icon"></i><h4>Notes</h4></div>
                 <div class="resource-input-group">
-                    <input type="text" class="resource-input blurred" id="notes-url" placeholder="PDF / Google Docs URL" readonly>
-                    <div class="lock-overlay" id="notes-lock-overlay"><i class="fas fa-lock"></i></div>
+                    <input type="text" class="resource-input blurred" id="notesUrl" placeholder="PDF / Docs URL" readonly>
+                    <div class="lock-overlay" id="notesLock"><i class="fas fa-lock"></i></div>
                 </div>
-                <div id="notes-status" style="display:none;" class="resource-status"><span>✅ Notes ready</span></div>
-                <button class="btn btn-secondary" id="view-notes-btn" style="display:none;"><i class="fas fa-eye"></i> View Notes</button>
+                <div id="notesStatus" style="display:none;" class="resource-status">✅ Notes attached</div>
+                <button id="viewNotesBtn" class="btn btn-secondary" style="display:none;"><i class="fas fa-eye"></i> View notes</button>
             </div>
             <div class="resource-card">
-                <div class="resource-header"><i class="fas fa-book resource-icon"></i><h4>DPP</h4></div>
+                <div class="resource-header"><i class="fas fa-tasks resource-icon"></i><h4>DPP</h4></div>
                 <div class="resource-input-group">
-                    <input type="text" class="resource-input blurred" id="dpp-url" placeholder="DPP PDF URL" readonly>
-                    <div class="lock-overlay" id="dpp-lock-overlay"><i class="fas fa-lock"></i></div>
+                    <input type="text" class="resource-input blurred" id="dppUrl" placeholder="DPP PDF link" readonly>
+                    <div class="lock-overlay" id="dppLock"><i class="fas fa-lock"></i></div>
                 </div>
-                <div id="dpp-status" style="display:none;" class="resource-status"><span>📄 DPP available</span></div>
-                <button class="btn btn-secondary" id="view-dpp-btn" style="display:none;"><i class="fas fa-external-link-alt"></i> View DPP</button>
+                <div id="dppStatus" style="display:none;" class="resource-status">📄 DPP ready</div>
+                <button id="viewDppBtn" class="btn btn-secondary" style="display:none;"><i class="fas fa-external-link-alt"></i> View DPP</button>
             </div>
         </div>
         <div class="horizontal-buttons">
-            <button class="btn btn-secondary horizontal-btn" id="save-session-btn"><i class="fas fa-save"></i> Save Session</button>
-            <button class="btn btn-secondary horizontal-btn" id="export-links-btn"><i class="fas fa-share-alt"></i> Export Links</button>
-            <button class="btn pdf-download-btn horizontal-btn" id="download-all-pdf-btn"><i class="fas fa-file-pdf"></i> Download All PDFs</button>
+            <button class="btn btn-secondary horizontal-btn" id="saveSessionBtn"><i class="fas fa-save"></i> Save session</button>
+            <button class="btn btn-secondary horizontal-btn" id="exportLinksBtn"><i class="fas fa-share-alt"></i> Export links</button>
+            <button class="btn pdf-download-btn horizontal-btn" id="downloadAllPdfBtn"><i class="fas fa-file-pdf"></i> Download PDFs</button>
         </div>
     </section>
-
-    <footer style="text-align:center; margin-top:60px; padding:30px 0;"><p>© 2025 LEARNIX PLAYER — Secure DASH streaming with signature propagation</p></footer>
+    <footer style="text-align:center; margin-top: 60px; padding: 25px 0; border-top:1px solid rgba(0,224,161,0.2);">
+        <p>© 2025 LEARNIX PLAYER · Token injection active for every DASH segment (init, media, chunks)</p>
+    </footer>
 </div>
 
 <div class="share-components">
-    <div class="share-btn" id="whatsapp-share"><i class="fab fa-whatsapp"></i></div>
-    <div class="share-btn" id="telegram-share"><i class="fab fa-telegram"></i></div>
-    <div class="share-btn" id="copy-link"><i class="fas fa-link"></i></div>
+    <div class="share-btn" id="whatsappShare"><i class="fab fa-whatsapp"></i></div>
+    <div class="share-btn" id="telegramShare"><i class="fab fa-telegram"></i></div>
+    <div class="share-btn" id="copyLinkBtn"><i class="fas fa-link"></i></div>
 </div>
-<div class="telegram-cta"><a href="#" class="telegram-btn" id="telegram-join"><i class="fab fa-telegram"></i> Join Telegram</a></div>
+<div class="telegram-cta"><a href="#" class="telegram-btn" id="telegramJoinBtn"><i class="fab fa-telegram"></i> Join channel</a></div>
 
 <!-- Modals -->
-<div class="modal" id="password-modal"><div class="modal-content"><i class="fas fa-lock" style="font-size:3rem; color:var(--primary);"></i><h3>Secure Edit Mode</h3><input type="password" id="password-input" placeholder="Enter password" style="width:100%; margin:15px 0; padding:12px;"><button id="submit-password" class="btn btn-primary">Unlock</button><button id="cancel-password" class="btn btn-secondary">Cancel</button><p style="margin-top:10px;">Default: murlikumar65@</p></div></div>
-<div class="modal" id="share-modal"><div class="modal-content"><h3>Share Session</h3><input type="text" id="share-url" readonly style="width:100%; margin:15px 0; padding:10px;"><button id="copy-share-url" class="btn btn-primary">Copy Link</button></div></div>
-<div class="modal" id="export-modal"><div class="modal-content"><h3>Export Session</h3><textarea id="export-data" rows="4" style="width:100%; margin:15px 0;" readonly></textarea><button id="close-export-modal" class="btn btn-secondary">Close</button></div></div>
-<div class="toast" id="toast"></div>
+<div class="modal" id="passwordModal"><div class="modal-content"><i class="fas fa-lock" style="font-size:3rem; color:var(--primary);"></i><h3 style="margin:10px 0">Unlock editor</h3><input type="password" id="passwordInput" placeholder="Password" style="width:100%; padding:12px; margin:15px 0;"><button id="submitPassBtn" class="btn btn-primary">Unlock</button><button id="cancelPassBtn" class="btn btn-secondary">Cancel</button><p style="margin-top:12px;">Default: murlikumar65@</p></div></div>
+<div class="modal" id="shareModal"><div class="modal-content"><h3>Share session</h3><input type="text" id="shareUrlField" readonly style="width:100%; margin:15px 0; padding:10px;"><button id="copyShareFieldBtn" class="btn btn-primary">Copy link</button><button id="closeShareModal" class="btn btn-secondary" style="margin-top:12px;">Close</button></div></div>
+<div class="modal" id="exportModal"><div class="modal-content"><h3>Export session data</h3><textarea id="exportTextArea" rows="5" readonly style="width:100%; margin:15px 0;"></textarea><button id="closeExportBtn" class="btn btn-secondary">Close</button></div></div>
+<div class="toast" id="toastMsg"></div>
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
 <script>
-    // ---------- GLOBALS ----------
-    let hlsPlayer = null, dashPlayer = null, currentPlayerType = null;
-    let activeAuthParams = {};      // store signature parameters for DASH segment injection
-    let currentMpdBaseUrl = "";
+    AOS.init({ duration: 700, once: true });
 
-    // Helper: extract auth params from URL (URLPrefix, Expires, KeyName, Signature)
-    function extractAuthParams(url) {
+    // ---------- GLOBALS ----------
+    let dashPlayer = null;
+    let hlsPlayer = null;
+    let activeAuthParams = {};        // holds { URLPrefix, Expires, KeyName, Signature }
+    let currentMpdUrl = "";
+
+    // ---------- CORE: extract auth parameters from ANY MPD URL ----------
+    function extractAuthParamsFromUrl(url) {
         try {
             const urlObj = new URL(url);
-            const params = ['URLPrefix', 'Expires', 'KeyName', 'Signature'];
-            const extracted = {};
-            params.forEach(p => {
-                if (urlObj.searchParams.has(p)) extracted[p] = urlObj.searchParams.get(p);
+            const allowedKeys = ['URLPrefix', 'Expires', 'KeyName', 'Signature'];
+            const params = {};
+            allowedKeys.forEach(key => {
+                if (urlObj.searchParams.has(key)) {
+                    params[key] = urlObj.searchParams.get(key);
+                }
             });
-            return extracted;
-        } catch(e) { return {}; }
+            console.log("[AUTH] Extracted params:", params);
+            return params;
+        } catch(e) {
+            console.warn("[AUTH] URL parse error", e);
+            return {};
+        }
     }
 
-    // Append auth parameters to a given URL string (skip if already present)
-    function appendAuthToUrl(baseUrl, authParams) {
-        if (!authParams || Object.keys(authParams).length === 0) return baseUrl;
+    // Append current auth parameters to any URL (used in interceptor)
+    function appendAuthToUrl(originalUrl, authParams) {
+        if (!authParams || Object.keys(authParams).length === 0) return originalUrl;
         try {
-            const urlObj = new URL(baseUrl, window.location.href);
-            let changed = false;
-            for (const [key, val] of Object.entries(authParams)) {
+            const urlObj = new URL(originalUrl, window.location.href);
+            let modified = false;
+            // Add each missing param
+            for (const [key, value] of Object.entries(authParams)) {
                 if (!urlObj.searchParams.has(key)) {
-                    urlObj.searchParams.set(key, val);
-                    changed = true;
+                    urlObj.searchParams.set(key, value);
+                    modified = true;
                 }
             }
-            return changed ? urlObj.toString() : baseUrl;
-        } catch(e) { return baseUrl; }
+            return modified ? urlObj.toString() : originalUrl;
+        } catch(e) {
+            // if URL is relative or malformed, try simple string append (fallback)
+            if (originalUrl.includes('?')) return originalUrl + '&' + new URLSearchParams(authParams).toString();
+            else return originalUrl + '?' + new URLSearchParams(authParams).toString();
+        }
     }
 
-    // DASH Player with REQUEST INTERCEPTOR (critical for signed MPD segments)
-    function initDashWithAuth(mpdUrl, videoElement) {
+    // ---------- DASH PLAYER WITH REQUEST INTERCEPTOR (dynamic token injection) ----------
+    async function initDashWithTokenInjection(mpdUrl, videoElement) {
         return new Promise((resolve, reject) => {
-            const authParams = extractAuthParams(mpdUrl);
+            // Destroy existing dash player
+            if (dashPlayer) {
+                dashPlayer.destroy();
+                dashPlayer = null;
+            }
+            // 1) Extract fresh auth params from the current MPD url
+            const authParams = extractAuthParamsFromUrl(mpdUrl);
             activeAuthParams = authParams;
-            currentMpdBaseUrl = mpdUrl.split('?')[0];
-            
-            if (dashPlayer) dashPlayer.destroy();
+            currentMpdUrl = mpdUrl;
+
+            if (Object.keys(authParams).length === 0) {
+                console.warn("[DASH] No auth parameters found in URL. Segment requests may fail.");
+                showToast("⚠️ No URLPrefix/Signature found. Token injection disabled.", "error");
+            } else {
+                console.log("[DASH] Token injection active. Params:", authParams);
+                showToast(`🔑 Token loaded: URLPrefix, Expires, Signature active`, "info");
+            }
+
+            // 2) Create dash player
             dashPlayer = dashjs.MediaPlayer().create();
             dashPlayer.initialize(videoElement, mpdUrl, true);
-            
-            // ---- CORE FIX: Intercept every segment request & add auth params ----
+
+            // 3) REQUEST MODIFIER: inject auth params into EVERY request (init.mp4, segments, manifests)
             if (Object.keys(authParams).length > 0) {
                 dashPlayer.setRequestModifier((request) => {
                     if (request && request.url) {
-                        let modifiedUrl = appendAuthToUrl(request.url, authParams);
-                        if (modifiedUrl !== request.url) {
+                        const originalUrl = request.url;
+                        const modifiedUrl = appendAuthToUrl(originalUrl, authParams);
+                        if (modifiedUrl !== originalUrl) {
                             request.url = modifiedUrl;
+                            // Optional: also add custom headers required by the CDN (Referer, User-Agent)
+                            if (!request.headers) request.headers = [];
+                            // Ensure we mimic browser headers exactly as your curl example
+                            const hasReferer = request.headers.some(h => h.name === 'Referer');
+                            if (!hasReferer) {
+                                request.headers.push({ name: "Referer", value: "https://movie-dusky-three.vercel.app/" });
+                            }
+                            const hasUA = request.headers.some(h => h.name === 'User-Agent');
+                            if (!hasUA) {
+                                request.headers.push({ name: "User-Agent", value: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Mobile Safari/537.36" });
+                            }
                         }
                     }
                     return request;
                 });
-                console.log("[DASH] Auth interceptor active for:", authParams);
+            } else {
+                // Still add referer for compatibility
+                dashPlayer.setRequestModifier((req) => {
+                    if (req && !req.headers) req.headers = [];
+                    if (!req.headers.some(h => h.name === 'Referer')) {
+                        req.headers.push({ name: "Referer", value: "https://movie-dusky-three.vercel.app/" });
+                    }
+                    return req;
+                });
             }
-            
+
+            // 4) Event listeners
             dashPlayer.on(dashjs.MediaPlayer.events.STREAM_INITIALIZED, () => {
+                console.log("[DASH] Stream initialized, token interceptor active for all segments.");
                 resolve();
             });
             dashPlayer.on(dashjs.MediaPlayer.events.ERROR, (e) => {
+                console.error("[DASH] Error:", e);
                 reject(e);
             });
         });
     }
 
-    // YouTube embed
-    function embedYouTube(videoId) {
-        const container = document.getElementById('video-player');
-        container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/${videoId}?modestbranding=1&rel=0&controls=1" frameborder="0" allowfullscreen></iframe>`;
+    // ----- YouTube fallback (optional) -----
+    function getYoutubeId(url) {
+        const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\/]+)/);
+        return match ? match[1] : null;
     }
 
-    // Main play logic (supports DASH with auto auth propagation)
+    // ----- Main play entry point -----
     async function playVideo(url) {
-        if (!url) { showToast("Enter video URL first", "error"); return; }
+        if (!url || url.trim() === "") {
+            showToast("Please paste your MPD (DASH) URL", "error");
+            return;
+        }
         showLoading(true);
-        document.getElementById('player-placeholder').style.display = 'none';
-        
-        const youtubeId = (url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?\/]+)/) || [])[1];
-        if (youtubeId) {
-            embedYouTube(youtubeId);
+        document.getElementById('playerPlaceholder').style.display = 'none';
+
+        // YouTube detection
+        const ytId = getYoutubeId(url);
+        if (ytId) {
+            const container = document.getElementById('video-player');
+            container.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/${ytId}?modestbranding=1&rel=0&controls=1" frameborder="0" allowfullscreen></iframe>`;
             showLoading(false);
             return;
         }
-        
-        // Destroy any existing
-        if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
+
+        // Destroy any previous HLS or DASH
         if (dashPlayer) { dashPlayer.destroy(); dashPlayer = null; }
-        
-        const playerContainer = document.getElementById('video-player');
-        playerContainer.innerHTML = `<video id="main-video" controls style="width:100%; height:100%;"></video>`;
-        const videoElem = document.getElementById('main-video');
-        
+        if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
+
+        const container = document.getElementById('video-player');
+        container.innerHTML = `<video id="dash-video" controls style="width:100%; height:100%;"></video>`;
+        const videoElem = document.getElementById('dash-video');
+
         try {
-            if (url.includes('.mpd') || url.includes('master.mpd')) {
-                // DASH stream with signature support
-                await initDashWithAuth(url, videoElem);
+            if (url.includes('.mpd') || url.includes('master.mpd') || url.includes('manifest')) {
+                await initDashWithTokenInjection(url, videoElem);
                 showLoading(false);
                 videoElem.play().catch(e => showToast("Click play to start", "info"));
             } 
@@ -703,205 +578,227 @@
                 hlsPlayer.loadSource(url);
                 hlsPlayer.attachMedia(videoElem);
                 hlsPlayer.on(Hls.Events.MANIFEST_PARSED, () => { showLoading(false); videoElem.play(); });
-                hlsPlayer.on(Hls.Events.ERROR, (_, data) => { showLoading(false); showToast("HLS error", "error"); });
+                hlsPlayer.on(Hls.Events.ERROR, () => { showLoading(false); showToast("HLS error", "error"); });
             }
             else {
                 videoElem.src = url;
                 videoElem.addEventListener('canplay', () => { showLoading(false); videoElem.play(); });
-                videoElem.addEventListener('error', () => { showLoading(false); showToast("Cannot load video", "error"); });
+                videoElem.addEventListener('error', () => { showLoading(false); showToast("Cannot load media", "error"); });
             }
         } catch(err) {
-            showLoading(false);
-            showToast("Failed to load stream: " + err.message, "error");
             console.error(err);
+            showLoading(false);
+            showToast("Playback failed: " + (err.message || "invalid stream"), "error");
         }
     }
-    
-    // ---------- RESOURCE & UI HELPERS ----------
+
+    // ----- UI helpers (unchanged but important) -----
     function showToast(msg, type="") {
-        const toast = document.getElementById('toast');
+        const toast = document.getElementById('toastMsg');
         toast.textContent = msg;
         toast.style.display = "block";
-        setTimeout(() => toast.style.display = "none", 3000);
+        setTimeout(() => toast.style.display = "none", 3500);
     }
-    function showLoading(show) { document.getElementById('loading-spinner').style.display = show ? "block" : "none"; }
-    function updateShareUrl() {
-        const video = document.getElementById('video-url').value;
-        const notes = document.getElementById('notes-url').value;
-        const dpp = document.getElementById('dpp-url').value;
-        const thumb = document.getElementById('thumbnail-url').value;
-        const params = new URLSearchParams();
-        if(video) params.set('play', btoa(video));
-        if(notes) params.set('notes', btoa(notes));
-        if(dpp) params.set('dpp', btoa(dpp));
-        if(thumb) params.set('thumb', btoa(thumb));
-        const shareUrl = window.location.origin + window.location.pathname + (params.toString() ? '?'+params.toString() : '');
-        const shareInput = document.getElementById('share-url');
-        if(shareInput) shareInput.value = shareUrl;
-        return shareUrl;
+    function showLoading(show) {
+        document.getElementById('spinner').style.display = show ? "block" : "none";
     }
-    function handleNotesAdded(url) {
-        document.getElementById('notes-status').style.display = 'flex';
-        document.getElementById('view-notes-btn').style.display = 'inline-flex';
-        document.getElementById('view-notes-btn').onclick = () => window.open(url, '_blank');
-        updateShareUrl();
-    }
-    function handleDPPAdded(url) {
-        document.getElementById('dpp-status').style.display = 'flex';
-        document.getElementById('view-dpp-btn').style.display = 'inline-flex';
-        document.getElementById('view-dpp-btn').onclick = () => window.open(url, '_blank');
-        updateShareUrl();
-    }
-    function updateThumbnailPreview(url) {
-        const thumbImg = document.getElementById('thumbnail-preview');
-        if(url && url.match(/\.(jpg|jpeg|png|webp|gif)/i)) {
+    function updateThumbnail(url) {
+        const thumbImg = document.getElementById('thumbPreviewImg');
+        if (url && (url.match(/\.(jpg|jpeg|png|webp|gif)/i))) {
             thumbImg.src = url;
             thumbImg.style.display = 'block';
-            localStorage.setItem('thumbUrl', url);
+            localStorage.setItem('customThumb', url);
             document.getElementById('og-image').setAttribute('content', url);
         } else {
             thumbImg.style.display = 'none';
-            localStorage.removeItem('thumbUrl');
+            localStorage.removeItem('customThumb');
         }
     }
+    function buildShareUrl() {
+        const video = document.getElementById('videoUrl').value;
+        const notes = document.getElementById('notesUrl').value;
+        const dpp = document.getElementById('dppUrl').value;
+        const thumb = document.getElementById('thumbUrl').value;
+        const params = new URLSearchParams();
+        if (video) params.set('play', btoa(video));
+        if (notes) params.set('notes', btoa(notes));
+        if (dpp) params.set('dpp', btoa(dpp));
+        if (thumb) params.set('thumb', btoa(thumb));
+        return window.location.origin + window.location.pathname + (params.toString() ? '?'+params.toString() : '');
+    }
+    function refreshShareField() {
+        const shareInput = document.getElementById('shareUrlField');
+        if (shareInput) shareInput.value = buildShareUrl();
+    }
     function resetAll() {
-        if(hlsPlayer) hlsPlayer.destroy();
-        if(dashPlayer) dashPlayer.destroy();
-        document.getElementById('video-url').value = '';
-        document.getElementById('notes-url').value = '';
-        document.getElementById('dpp-url').value = '';
-        document.getElementById('thumbnail-url').value = '';
-        document.getElementById('notes-status').style.display = 'none';
-        document.getElementById('dpp-status').style.display = 'none';
-        document.getElementById('view-notes-btn').style.display = 'none';
-        document.getElementById('view-dpp-btn').style.display = 'none';
-        updateThumbnailPreview('');
-        document.getElementById('video-player').innerHTML = `<div class="player-placeholder" id="player-placeholder"><img src="" class="thumbnail-preview" id="thumbnail-preview"><div class="thumbnail-overlay"><i class="fas fa-play-circle play-button-large"></i><div class="play-text">Click to Play Video</div></div></div>`;
-        document.getElementById('player-placeholder').addEventListener('click', () => { const u = document.getElementById('video-url').value; if(u) playVideo(u); else showToast("No URL", "error"); });
-        showToast("Reset complete", "success");
+        if (dashPlayer) { dashPlayer.destroy(); dashPlayer = null; }
+        if (hlsPlayer) { hlsPlayer.destroy(); hlsPlayer = null; }
+        document.getElementById('videoUrl').value = '';
+        document.getElementById('notesUrl').value = '';
+        document.getElementById('dppUrl').value = '';
+        document.getElementById('thumbUrl').value = '';
+        document.getElementById('notesStatus').style.display = 'none';
+        document.getElementById('dppStatus').style.display = 'none';
+        document.getElementById('viewNotesBtn').style.display = 'none';
+        document.getElementById('viewDppBtn').style.display = 'none';
+        updateThumbnail('');
+        document.getElementById('video-player').innerHTML = `
+            <div class="player-placeholder" id="playerPlaceholder">
+                <img src="" class="thumbnail-preview" id="thumbPreviewImg">
+                <div class="thumbnail-overlay">
+                    <i class="fas fa-play-circle play-button-large"></i>
+                    <div class="play-text">Click to Play Video</div>
+                </div>
+            </div>`;
+        document.getElementById('playerPlaceholder').addEventListener('click', () => {
+            const u = document.getElementById('videoUrl').value;
+            if (u) playVideo(u); else showToast("Enter video URL first", "error");
+        });
+        showToast("All data cleared", "success");
     }
     
-    // Password / Edit mode (restore persist)
+    // ----- Password lock/unlock for editing URLs -----
     function unlockEditing() {
-        const inputs = ['video-url','notes-url','dpp-url','thumbnail-url'];
+        const inputs = ['videoUrl','notesUrl','dppUrl','thumbUrl'];
         inputs.forEach(id => {
             const el = document.getElementById(id);
-            el.classList.remove('blurred');
-            el.readOnly = false;
+            if (el) { el.classList.remove('blurred'); el.readOnly = false; }
         });
-        document.querySelectorAll('.lock-overlay').forEach(overlay => overlay.style.display = 'none');
-        document.getElementById('edit-lock-btn').innerHTML = '<i class="fas fa-unlock"></i>';
+        document.querySelectorAll('.lock-overlay').forEach(ov => ov.style.display = 'none');
+        document.getElementById('editLockBtn').innerHTML = '<i class="fas fa-unlock"></i>';
         localStorage.setItem('editMode', 'true');
-        showToast("Edit mode ON", "success");
+        showToast("✏️ Edit mode ON - you can change MPD URL", "success");
     }
     function lockEditing() {
-        const inputs = ['video-url','notes-url','dpp-url','thumbnail-url'];
+        const inputs = ['videoUrl','notesUrl','dppUrl','thumbUrl'];
         inputs.forEach(id => {
             const el = document.getElementById(id);
-            el.classList.add('blurred');
-            el.readOnly = true;
+            if (el) { el.classList.add('blurred'); el.readOnly = true; }
         });
-        document.querySelectorAll('.lock-overlay').forEach(overlay => overlay.style.display = 'flex');
-        document.getElementById('edit-lock-btn').innerHTML = '<i class="fas fa-lock"></i>';
+        document.querySelectorAll('.lock-overlay').forEach(ov => ov.style.display = 'flex');
+        document.getElementById('editLockBtn').innerHTML = '<i class="fas fa-lock"></i>';
         localStorage.removeItem('editMode');
+        showToast("🔒 Edit mode locked", "info");
     }
     function validatePassword() {
-        const pwd = document.getElementById('password-input').value;
+        const pwd = document.getElementById('passwordInput').value;
         const stored = localStorage.getItem('editPassword') || 'murlikumar65@';
-        if(pwd === stored) {
+        if (pwd === stored) {
             unlockEditing();
-            document.getElementById('password-modal').style.display = 'none';
+            document.getElementById('passwordModal').style.display = 'none';
         } else showToast("Wrong password", "error");
     }
     
-    // Save/Load session with thumbnail
+    // Resource handlers
+    function attachNotes() {
+        const url = document.getElementById('notesUrl').value;
+        if (!url) return;
+        document.getElementById('notesStatus').style.display = 'flex';
+        document.getElementById('viewNotesBtn').style.display = 'inline-flex';
+        document.getElementById('viewNotesBtn').onclick = () => window.open(url, '_blank');
+        refreshShareField();
+    }
+    function attachDpp() {
+        const url = document.getElementById('dppUrl').value;
+        if (!url) return;
+        document.getElementById('dppStatus').style.display = 'flex';
+        document.getElementById('viewDppBtn').style.display = 'inline-flex';
+        document.getElementById('viewDppBtn').onclick = () => window.open(url, '_blank');
+        refreshShareField();
+    }
     function saveSession() {
         const session = {
-            video: document.getElementById('video-url').value,
-            notes: document.getElementById('notes-url').value,
-            dpp: document.getElementById('dpp-url').value,
-            thumbnail: document.getElementById('thumbnail-url').value
+            video: document.getElementById('videoUrl').value,
+            notes: document.getElementById('notesUrl').value,
+            dpp: document.getElementById('dppUrl').value,
+            thumb: document.getElementById('thumbUrl').value
         };
-        localStorage.setItem('learnixSession', JSON.stringify(session));
-        showToast("Session saved", "success");
+        localStorage.setItem('learnixSessionData', JSON.stringify(session));
+        showToast("Session saved (including token URL)", "success");
     }
-    function loadSession() {
-        const raw = localStorage.getItem('learnixSession');
-        if(!raw) return showToast("No saved session", "error");
+    function loadSessionFromStorage() {
+        const raw = localStorage.getItem('learnixSessionData');
+        if (!raw) { showToast("No saved session", "error"); return; }
         const s = JSON.parse(raw);
-        if(s.video) document.getElementById('video-url').value = s.video;
-        if(s.notes) { document.getElementById('notes-url').value = s.notes; handleNotesAdded(s.notes); }
-        if(s.dpp) { document.getElementById('dpp-url').value = s.dpp; handleDPPAdded(s.dpp); }
-        if(s.thumbnail) { document.getElementById('thumbnail-url').value = s.thumbnail; updateThumbnailPreview(s.thumbnail); }
+        if (s.video) document.getElementById('videoUrl').value = s.video;
+        if (s.notes) { document.getElementById('notesUrl').value = s.notes; attachNotes(); }
+        if (s.dpp) { document.getElementById('dppUrl').value = s.dpp; attachDpp(); }
+        if (s.thumb) { document.getElementById('thumbUrl').value = s.thumb; updateThumbnail(s.thumb); }
         showToast("Session loaded", "success");
     }
     function exportLinks() {
-        const video = document.getElementById('video-url').value || "—";
-        const notes = document.getElementById('notes-url').value || "—";
-        const dpp = document.getElementById('dpp-url').value || "—";
-        const thumb = document.getElementById('thumbnail-url').value || "—";
-        const exportText = `📺 LEARNIX SESSION\nVideo: ${video}\nNotes: ${notes}\nDPP: ${dpp}\nThumbnail: ${thumb}`;
-        document.getElementById('export-data').value = exportText;
-        document.getElementById('export-modal').style.display = 'flex';
+        const video = document.getElementById('videoUrl').value || "—";
+        const notes = document.getElementById('notesUrl').value || "—";
+        const dpp = document.getElementById('dppUrl').value || "—";
+        const thumb = document.getElementById('thumbUrl').value || "—";
+        const exportStr = `🎓 LEARNIX SESSION\nVideo MPD: ${video}\nNotes: ${notes}\nDPP: ${dpp}\nThumbnail: ${thumb}`;
+        document.getElementById('exportTextArea').value = exportStr;
+        document.getElementById('exportModal').style.display = 'flex';
     }
-    function downloadAllPDFs() {
-        const notesUrl = document.getElementById('notes-url').value;
-        const dppUrl = document.getElementById('dpp-url').value;
-        if(notesUrl && notesUrl.includes('.pdf')) window.open(notesUrl, '_blank');
-        if(dppUrl && dppUrl.includes('.pdf')) setTimeout(() => window.open(dppUrl, '_blank'), 300);
-        showToast("Opening PDFs", "info");
+    function downloadAllPdfs() {
+        const notesUrl = document.getElementById('notesUrl').value;
+        const dppUrl = document.getElementById('dppUrl').value;
+        if (notesUrl && (notesUrl.includes('.pdf') || notesUrl.includes('drive'))) window.open(notesUrl, '_blank');
+        if (dppUrl && (dppUrl.includes('.pdf') || dppUrl.includes('drive'))) setTimeout(() => window.open(dppUrl, '_blank'), 400);
+        showToast("Opening PDF resources", "info");
     }
-    
-    // Event binding & theme
+
+    // ----- DOM READY & EVENT BINDINGS -----
     document.addEventListener('DOMContentLoaded', () => {
-        AOS.init({ duration: 600 });
-        // Theme
-        const savedTheme = localStorage.getItem('theme');
-        if(savedTheme === 'light') document.documentElement.classList.add('light-theme');
-        document.getElementById('theme-toggle').addEventListener('click', () => {
+        // theme
+        if (localStorage.getItem('theme') === 'light') document.documentElement.classList.add('light-theme');
+        document.getElementById('themeToggle').addEventListener('click', () => {
             document.documentElement.classList.toggle('light-theme');
             localStorage.setItem('theme', document.documentElement.classList.contains('light-theme') ? 'light' : 'dark');
         });
-        // Password setup default
-        if(!localStorage.getItem('editPassword')) localStorage.setItem('editPassword', 'murlikumar65@');
-        if(localStorage.getItem('editMode') === 'true') unlockEditing();
+        if (!localStorage.getItem('editPassword')) localStorage.setItem('editPassword', 'murlikumar65@');
+        if (localStorage.getItem('editMode') === 'true') unlockEditing();
         else lockEditing();
-        
-        // Buttons
-        document.getElementById('play-btn').addEventListener('click', () => playVideo(document.getElementById('video-url').value));
-        document.getElementById('reset-btn').addEventListener('click', resetAll);
-        document.getElementById('edit-lock-btn').addEventListener('click', () => { if(document.getElementById('edit-lock-btn').innerHTML.includes('lock')) document.getElementById('password-modal').style.display = 'flex'; else lockEditing(); });
-        document.getElementById('submit-password').addEventListener('click', validatePassword);
-        document.getElementById('cancel-password').addEventListener('click', () => document.getElementById('password-modal').style.display = 'none');
-        document.getElementById('save-session-btn').addEventListener('click', saveSession);
-        document.getElementById('export-links-btn').addEventListener('click', exportLinks);
-        document.getElementById('download-all-pdf-btn').addEventListener('click', downloadAllPDFs);
-        document.getElementById('close-export-modal').addEventListener('click', () => document.getElementById('export-modal').style.display = 'none');
-        document.getElementById('copy-share-url').addEventListener('click', () => { const inp = document.getElementById('share-url'); inp.select(); navigator.clipboard.writeText(inp.value); showToast("Copied!"); });
-        document.getElementById('share-btn').addEventListener('click', () => { updateShareUrl(); document.getElementById('share-modal').style.display = 'flex'; });
-        document.getElementById('copy-link').addEventListener('click', () => { const link = updateShareUrl(); navigator.clipboard.writeText(link); showToast("Link copied"); });
-        document.getElementById('whatsapp-share').addEventListener('click', () => { const url = updateShareUrl(); window.open(`https://wa.me/?text=${encodeURIComponent(url)}`); });
-        document.getElementById('telegram-share').addEventListener('click', () => { const url = updateShareUrl(); window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}`); });
-        document.getElementById('telegram-join').addEventListener('click', (e) => { e.preventDefault(); showToast("Join @learnix_support (demo)", "info"); });
-        
-        // Add notes/dpp manual (owner)
-        document.getElementById('add-notes-btn')?.addEventListener('click', () => { const url = document.getElementById('notes-url').value; if(url) handleNotesAdded(url); });
-        document.getElementById('add-dpp-btn')?.addEventListener('click', () => { const url = document.getElementById('dpp-url').value; if(url) handleDPPAdded(url); });
-        
-        // Thumbnail input live preview
-        document.getElementById('thumbnail-url').addEventListener('input', (e) => updateThumbnailPreview(e.target.value));
-        // Load from URL params
-        const params = new URLSearchParams(window.location.search);
-        if(params.get('play')) document.getElementById('video-url').value = atob(params.get('play'));
-        if(params.get('notes')) { const n = atob(params.get('notes')); document.getElementById('notes-url').value = n; handleNotesAdded(n); }
-        if(params.get('dpp')) { const d = atob(params.get('dpp')); document.getElementById('dpp-url').value = d; handleDPPAdded(d); }
-        if(params.get('thumb')) { const t = atob(params.get('thumb')); document.getElementById('thumbnail-url').value = t; updateThumbnailPreview(t); }
-        
-        const lastThumb = localStorage.getItem('thumbUrl');
-        if(lastThumb) updateThumbnailPreview(lastThumb);
-        
-        // Global placeholder click
-        document.getElementById('player-placeholder')?.addEventListener('click', () => { const u = document.getElementById('video-url').value; if(u) playVideo(u); else showToast("Enter video URL first", "error"); });
+
+        document.getElementById('playBtn').addEventListener('click', () => playVideo(document.getElementById('videoUrl').value));
+        document.getElementById('resetBtn').addEventListener('click', resetAll);
+        document.getElementById('editLockBtn').addEventListener('click', () => {
+            if (document.getElementById('editLockBtn').innerHTML.includes('lock')) document.getElementById('passwordModal').style.display = 'flex';
+            else lockEditing();
+        });
+        document.getElementById('submitPassBtn').addEventListener('click', validatePassword);
+        document.getElementById('cancelPassBtn').addEventListener('click', () => document.getElementById('passwordModal').style.display = 'none');
+        document.getElementById('saveSessionBtn').addEventListener('click', saveSession);
+        document.getElementById('exportLinksBtn').addEventListener('click', exportLinks);
+        document.getElementById('downloadAllPdfBtn').addEventListener('click', downloadAllPdfs);
+        document.getElementById('closeExportBtn').addEventListener('click', () => document.getElementById('exportModal').style.display = 'none');
+        document.getElementById('shareMainBtn').addEventListener('click', () => { refreshShareField(); document.getElementById('shareModal').style.display = 'flex'; });
+        document.getElementById('closeShareModal').addEventListener('click', () => document.getElementById('shareModal').style.display = 'none');
+        document.getElementById('copyShareFieldBtn').addEventListener('click', () => {
+            const inp = document.getElementById('shareUrlField');
+            inp.select(); navigator.clipboard.writeText(inp.value); showToast("Link copied");
+        });
+        document.getElementById('copyLinkBtn').addEventListener('click', () => {
+            const link = buildShareUrl();
+            navigator.clipboard.writeText(link); showToast("Share link copied");
+        });
+        document.getElementById('whatsappShare').addEventListener('click', () => window.open(`https://wa.me/?text=${encodeURIComponent(buildShareUrl())}`));
+        document.getElementById('telegramShare').addEventListener('click', () => window.open(`https://t.me/share/url?url=${encodeURIComponent(buildShareUrl())}`));
+        document.getElementById('telegramJoinBtn').addEventListener('click', (e) => { e.preventDefault(); showToast("Join @learnix_official (demo)", "info"); });
+
+        document.getElementById('notesUrl').addEventListener('change', attachNotes);
+        document.getElementById('dppUrl').addEventListener('change', attachDpp);
+        document.getElementById('thumbUrl').addEventListener('input', (e) => updateThumbnail(e.target.value));
+
+        // Load from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('play')) document.getElementById('videoUrl').value = atob(urlParams.get('play'));
+        if (urlParams.get('notes')) { document.getElementById('notesUrl').value = atob(urlParams.get('notes')); attachNotes(); }
+        if (urlParams.get('dpp')) { document.getElementById('dppUrl').value = atob(urlParams.get('dpp')); attachDpp(); }
+        if (urlParams.get('thumb')) { document.getElementById('thumbUrl').value = atob(urlParams.get('thumb')); updateThumbnail(atob(urlParams.get('thumb'))); }
+
+        const savedThumb = localStorage.getItem('customThumb');
+        if (savedThumb) updateThumbnail(savedThumb);
+
+        document.getElementById('playerPlaceholder')?.addEventListener('click', () => {
+            const url = document.getElementById('videoUrl').value;
+            if (url) playVideo(url); else showToast("Paste a valid MPD URL first", "error");
+        });
     });
 </script>
 </body>
